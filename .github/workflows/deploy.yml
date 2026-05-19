@@ -20,6 +20,24 @@ jobs:
           sudo apt-get update -y
           sudo apt-get install -y sshpass
 
-          # Use scp to copy all files recursively, forcing password auth only
+          # Set up SSH configuration
+          mkdir -p ~/.ssh
+          chmod 700 ~/.ssh
+
+          # Create known_hosts entry to avoid prompt
+          ssh-keyscan -t ed25519 "$SSH_HOST" >> ~/.ssh/known_hosts 2>/dev/null || true
+
+          # Use scp to copy files, excluding .git and other unnecessary files
           echo "Copying files to cluster..."
-          sshpass -p "$SSH_PASS" scp -r -o StrictHostKeyChecking=no -o PreferredAuthentications=password -o PubkeyAuthentication=no ./ $SSH_USER@$SSH_HOST:~/cvcs2026/MDN-C-CS/
+          sshpass -p "$SSH_PASS" scp -r \
+            -o StrictHostKeyChecking=accept-new \
+            -o PreferredAuthentications=password \
+            -o PubkeyAuthentication=no \
+            -o ConnectTimeout=10 \
+            --exclude='.git' \
+            --exclude='.github' \
+            --exclude='__pycache__' \
+            --exclude='*.pyc' \
+            --exclude='.pytest_cache' \
+            --exclude='.venv' \
+            . "${SSH_USER}@${SSH_HOST}:~/cvcs2026/MDN-C-CS/"
