@@ -13,9 +13,14 @@ jobs:
       - name: Setup SSH Key
         run: |
           mkdir -p ~/.ssh
-          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_ed25519
+          chmod 700 ~/.ssh
+          printf '%s\n' "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_ed25519
           chmod 600 ~/.ssh/id_ed25519
           ssh-keyscan -t ed25519 "${{ secrets.SSH_HOST }}" >> ~/.ssh/known_hosts 2>/dev/null || true
+          
+          # Test SSH connection
+          echo "Testing SSH connection..."
+          ssh -o StrictHostKeyChecking=accept-new -o ConnectTimeout=5 "${{ secrets.SSH_USERNAME }}@${{ secrets.SSH_HOST }}" "echo 'SSH connection successful!'" || exit 1
 
       - name: Copy files to cluster
         run: |
