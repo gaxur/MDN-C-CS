@@ -16,8 +16,14 @@ jobs:
           echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/github_actions_mdn
           chmod 600 ~/.ssh/github_actions_mdn
 
+      - name: Install sshpass
+        run: |
+          sudo apt-get update && sudo apt-get install -y sshpass
+
       - name: Copy files to cluster
         run: |
-          rsync -avz --delete \
-            -e "ssh -o StrictHostKeyChecking=no -i ~/.ssh/github_actions_mdn" \
+          sshpass -e rsync -avz --delete \
+            -e "ssh -o StrictHostKeyChecking=no" \
             ./ ${{ secrets.SSH_USERNAME }}@${{ secrets.SSH_HOST }}:~/cvcs2026/MDN-C-CS/
+        env:
+          SSHPASS: ${{ secrets.SSH_PASSWORD }}
