@@ -1,4 +1,4 @@
-name: Deploy to Cluster
+name: Deploy to Cluster # Deploy to cluster on push to main branch
 on:
   push:
     branches: [ main ]
