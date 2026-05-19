@@ -23,11 +23,14 @@ jobs:
       - name: Deploy to cluster with password auth
         env:
           SSH_PASS: ${{ secrets.SSH_PASSWORD }}
+          SSH_USER: ${{ secrets.SSH_USERNAME }}
+          SSH_HOST: ${{ secrets.SSH_HOST }}
         run: |
           expect -c "
-          spawn rsync -avz --delete -e 'ssh -o StrictHostKeyChecking=no' ./ ${{ secrets.SSH_USERNAME }}@${{ secrets.SSH_HOST }}:~/cvcs2026/MDN-C-CS/
+          set timeout 60
+          spawn rsync -avz --delete -e \"ssh -o StrictHostKeyChecking=no\" ./ \${SSH_USER}@\${SSH_HOST}:~/cvcs2026/MDN-C-CS/
           expect {
-            \"*password:\" {
+            \"*password:*\" {
               send \"\${SSH_PASS}\r\"
               exp_continue
             }
