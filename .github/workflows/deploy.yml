@@ -12,14 +12,22 @@ jobs:
 
       - name: Copy files to cluster
         env:
-          SSH_PASS: ${{ secrets.SSH_PASSWORD }}
+          SSH_PASS: ${{ secrets.SSH_PASSWORD != '' && secrets.SSH_PASSWORD || secrets.SSH_PASS }}
+          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
           SSH_USER: ${{ secrets.SSH_USERNAME }}
           SSH_HOST: ${{ secrets.SSH_HOST }}
         run: |
-          # Install sshpass
-          sudo apt-get update -y
-          sudo apt-get install -y sshpass
-
-          # Use scp to copy all files recursively, forcing password auth only
           echo "Copying files to cluster..."
-          sshpass -p "$SSH_PASS" scp -r -o StrictHostKeyChecking=no -o PreferredAuthentications=password -o PubkeyAuthentication=no ./ $SSH_USER@$SSH_HOST:~/cvcs2026/MDN-C-CS/
+          if [ -n "$SSH_PRIVATE_KEY" ]; then
+            mkdir -p ~/.ssh
+            printf '%s\n' "$SSH_PRIVATE_KEY" > ~/.ssh/deploy_key
+            chmod 600 ~/.ssh/deploy_key
+            scp -r -i ~/.ssh/deploy_key -o StrictHostKeyChecking=no ./ "$SSH_USER@$SSH_HOST:~/cvcs2026/MDN-C-CS/"
+          elif [ -n "$SSH_PASS" ]; then
+            sudo apt-get update -y
+            sudo apt-get install -y sshpass
+            sshpass -p "$SSH_PASS" scp -r -o StrictHostKeyChecking=no -o PreferredAuthentications=password -o PubkeyAuthentication=no ./ "$SSH_USER@$SSH_HOST:~/cvcs2026/MDN-C-CS/"
+          else
+            echo "Error: define SSH_PRIVATE_KEY or SSH_PASSWORD/SSH_PASS in repository secrets."
+            exit 1
+          fi
