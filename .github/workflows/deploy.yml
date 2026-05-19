@@ -24,9 +24,9 @@ jobs:
           cat > deploy.exp << 'ENDSCRIPT'
           #!/usr/bin/expect -f
           set timeout 120
-          set ssh_user [env SSH_USER]
-          set ssh_host [env SSH_HOST]
-          set ssh_pass [env SSH_PASS]
+          set ssh_user $env(SSH_USER)
+          set ssh_host $env(SSH_HOST)
+          set ssh_pass $env(SSH_PASS)
           spawn rsync -avz --delete -e "ssh -o StrictHostKeyChecking=no" ./ ${ssh_user}@${ssh_host}:~/cvcs2026/MDN-C-CS/
           expect {
             "*password:*" {
