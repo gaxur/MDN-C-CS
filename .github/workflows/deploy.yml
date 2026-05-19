@@ -16,9 +16,9 @@ jobs:
           SSH_USER: ${{ secrets.SSH_USERNAME }}
           SSH_HOST: ${{ secrets.SSH_HOST }}
         run: |
-          # Install sshpass
+          # Install sshpass and rsync
           sudo apt-get update -y
-          sudo apt-get install -y sshpass
+          sudo apt-get install -y sshpass rsync
 
           # Set up SSH configuration
           mkdir -p ~/.ssh
@@ -27,17 +27,15 @@ jobs:
           # Create known_hosts entry to avoid prompt
           ssh-keyscan -t ed25519 "$SSH_HOST" >> ~/.ssh/known_hosts 2>/dev/null || true
 
-          # Use scp to copy files, excluding .git and other unnecessary files
+          # Use rsync to copy files with exclusions
           echo "Copying files to cluster..."
-          sshpass -p "$SSH_PASS" scp -r \
-            -o StrictHostKeyChecking=accept-new \
-            -o PreferredAuthentications=password \
-            -o PubkeyAuthentication=no \
-            -o ConnectTimeout=10 \
+          sshpass -p "$SSH_PASS" rsync -avz \
+            -e "ssh -o StrictHostKeyChecking=accept-new -o PreferredAuthentications=password -o PubkeyAuthentication=no -o ConnectTimeout=10" \
             --exclude='.git' \
             --exclude='.github' \
             --exclude='__pycache__' \
             --exclude='*.pyc' \
             --exclude='.pytest_cache' \
             --exclude='.venv' \
+            --exclude='.ipynb_checkpoints' \
             . "${SSH_USER}@${SSH_HOST}:~/cvcs2026/MDN-C-CS/"
