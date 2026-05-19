@@ -12,7 +12,7 @@ jobs:
 
       - name: Copy files to cluster
         env:
-          SSH_PASS: ${{ secrets.SSH_PASSWORD && secrets.SSH_PASSWORD || secrets.SSH_PASS }}
+          SSH_PASS: ${{ secrets.SSH_PASSWORD || secrets.SSH_PASS }}
           SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
           SSH_USER: ${{ secrets.SSH_USERNAME }}
           SSH_HOST: ${{ secrets.SSH_HOST }}
@@ -21,13 +21,13 @@ jobs:
           if [ -n "$SSH_PRIVATE_KEY" ]; then
             eval "$(ssh-agent -s)"
             trap 'ssh-agent -k >/dev/null' EXIT
-            printf '%s\n' "$SSH_PRIVATE_KEY" | tr -d '\r' | ssh-add -
+            ssh-add - <<< "${SSH_PRIVATE_KEY//$'\r'/}"
             scp -r -o StrictHostKeyChecking=no ./ "$SSH_USER@$SSH_HOST:~/cvcs2026/MDN-C-CS/"
           elif [ -n "$SSH_PASS" ]; then
             sudo apt-get update -y
             sudo apt-get install -y sshpass
             sshpass -p "$SSH_PASS" scp -r -o StrictHostKeyChecking=no -o PreferredAuthentications=password -o PubkeyAuthentication=no ./ "$SSH_USER@$SSH_HOST:~/cvcs2026/MDN-C-CS/"
           else
-            echo "Error: Define either SSH_PRIVATE_KEY or SSH_PASSWORD (or SSH_PASS) in repository secrets."
+            echo "Error: Define SSH_PRIVATE_KEY or SSH_PASSWORD (SSH_PASS is optional fallback) in repository secrets."
             exit 1
           fi
