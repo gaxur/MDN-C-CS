@@ -15,24 +15,22 @@ jobs:
           sudo apt-get update -qq
           sudo apt-get install -y -qq expect
 
-      - name: Set up SSH key
-        run: |
-          mkdir -p ~/.ssh
-          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/github_actions_mdn
-          chmod 600 ~/.ssh/github_actions_mdn
-
       - name: Deploy to cluster with password auth
         env:
           SSH_PASS: ${{ secrets.SSH_PASSWORD }}
           SSH_USER: ${{ secrets.SSH_USERNAME }}
           SSH_HOST: ${{ secrets.SSH_HOST }}
         run: |
-          expect << EOF
+          cat > deploy.exp << 'ENDSCRIPT'
+          #!/usr/bin/expect -f
           set timeout 120
-          spawn rsync -avz --delete -e "ssh -o StrictHostKeyChecking=no" ./ $SSH_USER@$SSH_HOST:~/cvcs2026/MDN-C-CS/
+          set ssh_user [env SSH_USER]
+          set ssh_host [env SSH_HOST]
+          set ssh_pass [env SSH_PASS]
+          spawn rsync -avz --delete -e "ssh -o StrictHostKeyChecking=no" ./ ${ssh_user}@${ssh_host}:~/cvcs2026/MDN-C-CS/
           expect {
             "*password:*" {
-              send "$SSH_PASS\r"
+              send "$ssh_pass\r"
               exp_continue
             }
             "*yes/no*" {
@@ -42,4 +40,7 @@ jobs:
             timeout { exit 1 }
             eof
           }
-          EOF
+          wait
+          ENDSCRIPT
+          expect deploy.exp
+        shell: bash
