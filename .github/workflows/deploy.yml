@@ -1,4 +1,4 @@
-name: Deploy to Cluster # Deploy to cluster on push to main branch
+name: Deploy to Cluster
 on:
   push:
     branches: [ main ]
@@ -7,7 +7,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-
       - name: Copy files to cluster
         env:
           SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
@@ -18,12 +17,12 @@ jobs:
           sudo apt-get install -y sshpass
 
           mkdir -p ~/.ssh
-          echo "$SSH_PRIVATE_KEY" > ~/.ssh/id_ed25519
+          echo "$SSH_PRIVATE_KEY" | base64 -d > ~/.ssh/id_ed25519
           chmod 600 ~/.ssh/id_ed25519
-          
+
           # Debug: verificar que la clave es válida
           ssh-keygen -y -f ~/.ssh/id_ed25519 || echo "CLAVE INVALIDA"
-          
+
           ssh-keyscan -t rsa,ed25519 "$SSH_HOST" >> ~/.ssh/known_hosts 2>/dev/null || true
 
           echo "Copying files to cluster..."
