@@ -10,37 +10,22 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Install expect
-        run: |
-          sudo apt-get update -qq
-          sudo apt-get install -y -qq expect
-
       - name: Deploy to cluster with password auth
         env:
           SSH_PASS: ${{ secrets.SSH_PASSWORD }}
           SSH_USER: ${{ secrets.SSH_USERNAME }}
           SSH_HOST: ${{ secrets.SSH_HOST }}
         run: |
-          cat > deploy.exp << 'ENDSCRIPT'
-          #!/usr/bin/expect -f
-          set timeout 120
-          set ssh_user $env(SSH_USER)
-          set ssh_host $env(SSH_HOST)
-          set ssh_pass $env(SSH_PASS)
-          spawn rsync -avz --delete -e "ssh -o StrictHostKeyChecking=no" ./ ${ssh_user}@${ssh_host}:~/cvcs2026/MDN-C-CS/
-          expect {
-            "*password:*" {
-              send "$ssh_pass\r"
-              exp_continue
-            }
-            "*yes/no*" {
-              send "yes\r"
-              exp_continue
-            }
-            timeout { exit 1 }
-            eof
-          }
-          wait
-          ENDSCRIPT
-          expect deploy.exp
-        shell: bash
+          # Create a script to handle password input
+          cat > deploy.sh << 'DEPLOYSCRIPT'
+          #!/bin/bash
+          export SSHPASS="${SSH_PASS}"
+          sshpass -e rsync -avz --delete -e "ssh -o StrictHostKeyChecking=no" ./ "${SSH_USER}@${SSH_HOST}:~/cvcs2026/MDN-C-CS/"
+          DEPLOYSCRIPT
+
+          # Install sshpass
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq sshpass
+
+          # Run deployment
+          bash deploy.sh
