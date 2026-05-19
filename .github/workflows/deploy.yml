@@ -20,6 +20,10 @@ jobs:
           mkdir -p ~/.ssh
           echo "$SSH_PRIVATE_KEY" > ~/.ssh/id_ed25519
           chmod 600 ~/.ssh/id_ed25519
+          
+          # Debug: verificar que la clave es válida
+          ssh-keygen -y -f ~/.ssh/id_ed25519 || echo "CLAVE INVALIDA"
+          
           ssh-keyscan -t rsa,ed25519 "$SSH_HOST" >> ~/.ssh/known_hosts 2>/dev/null || true
 
           echo "Copying files to cluster..."
