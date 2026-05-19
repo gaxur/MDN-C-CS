@@ -1,0 +1,17 @@
+torch
+torchvision
+transformers>=4.57.0
+accelerate
+huggingface_hub
+safetensors
+sentencepiece
+protobuf
+Pillow
+requests
+datasets
+tqdm
+numpy
+pandas
+matplotlib
+seaborn
+jupyterlab
