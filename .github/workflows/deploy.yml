@@ -16,14 +16,26 @@ jobs:
           echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/github_actions_mdn
           chmod 600 ~/.ssh/github_actions_mdn
 
-      - name: Install sshpass
+      - name: Install expect
         run: |
-          sudo apt-get update && sudo apt-get install -y sshpass
+          sudo apt-get update && sudo apt-get install -y expect
 
-      - name: Copy files to cluster
-        run: |
-          sshpass -e rsync -avz --delete \
-            -e "ssh -o StrictHostKeyChecking=no" \
-            ./ ${{ secrets.SSH_USERNAME }}@${{ secrets.SSH_HOST }}:~/cvcs2026/MDN-C-CS/
+      - name: Deploy to cluster with password auth
         env:
-          SSHPASS: ${{ secrets.SSH_PASSWORD }}
+          SSH_PASS: ${{ secrets.SSH_PASSWORD }}
+        run: |
+          expect -c "
+          spawn rsync -avz --delete -e 'ssh -o StrictHostKeyChecking=no' ./ ${{ secrets.SSH_USERNAME }}@${{ secrets.SSH_HOST }}:~/cvcs2026/MDN-C-CS/
+          expect {
+            \"*password:\" {
+              send \"\${SSH_PASS}\r\"
+              exp_continue
+            }
+            \"*yes/no*\" {
+              send \"yes\r\"
+              exp_continue
+            }
+            timeout { exit 1 }
+            eof
+          }
+          "
