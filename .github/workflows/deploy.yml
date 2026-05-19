@@ -12,7 +12,7 @@ jobs:
 
       - name: Copy files to cluster
         env:
-          SSH_PASS: ${{ secrets.SSH_PASSWORD }}
+          SSHPASS: ${{ secrets.SSH_PASSWORD }}
           SSH_USER: ${{ secrets.SSH_USERNAME }}
           SSH_HOST: ${{ secrets.SSH_HOST }}
         run: |
@@ -24,13 +24,23 @@ jobs:
           mkdir -p ~/.ssh
           chmod 700 ~/.ssh
 
-          # Create known_hosts entry to avoid prompt
+          # Add host to known_hosts
           ssh-keyscan -t ed25519 "$SSH_HOST" >> ~/.ssh/known_hosts 2>/dev/null || true
 
-          # Use rsync to copy files with exclusions
+          # Configure SSH to use password authentication and skip pubkey
+          cat > ~/.ssh/config <<EOF
+Host *
+    StrictHostKeyChecking accept-new
+    PreferredAuthentications password,keyboard-interactive
+    PubkeyAuthentication no
+    ConnectTimeout 10
+    UserKnownHostsFile ~/.ssh/known_hosts
+EOF
+          chmod 600 ~/.ssh/config
+
+          # Use rsync to copy files with exclusions via sshpass
           echo "Copying files to cluster..."
-          sshpass -p "$SSH_PASS" rsync -avz \
-            -e "ssh -o StrictHostKeyChecking=accept-new -o PreferredAuthentications=password -o PubkeyAuthentication=no -o ConnectTimeout=10" \
+          sshpass -e rsync -avz \
             --exclude='.git' \
             --exclude='.github' \
             --exclude='__pycache__' \
