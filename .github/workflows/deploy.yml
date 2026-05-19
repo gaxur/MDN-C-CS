@@ -10,22 +10,16 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Deploy to cluster with password auth
+      - name: Copy files to cluster
         env:
           SSH_PASS: ${{ secrets.SSH_PASSWORD }}
           SSH_USER: ${{ secrets.SSH_USERNAME }}
           SSH_HOST: ${{ secrets.SSH_HOST }}
         run: |
-          # Create a script to handle password input
-          cat > deploy.sh << 'DEPLOYSCRIPT'
-          #!/bin/bash
-          export SSHPASS="${SSH_PASS}"
-          sshpass -e rsync -avz --delete -e "ssh -o StrictHostKeyChecking=no" ./ "${SSH_USER}@${SSH_HOST}:~/cvcs2026/MDN-C-CS/"
-          DEPLOYSCRIPT
-
           # Install sshpass
-          sudo apt-get update -qq
-          sudo apt-get install -y -qq sshpass
+          sudo apt-get update -y
+          sudo apt-get install -y sshpass
 
-          # Run deployment
-          bash deploy.sh
+          # Use scp to copy all files recursively, forcing password auth only
+          echo "Copying files to cluster..."
+          sshpass -p "$SSH_PASS" scp -r -o StrictHostKeyChecking=no -o PreferredAuthentications=password -o PubkeyAuthentication=no ./ $SSH_USER@$SSH_HOST:~/cvcs2026/MDN-C-CS/
