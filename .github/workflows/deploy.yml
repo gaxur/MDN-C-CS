@@ -16,29 +16,25 @@ jobs:
           echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/github_actions_mdn
           chmod 600 ~/.ssh/github_actions_mdn
 
-      - name: Install expect
-        run: |
-          sudo apt-get update && sudo apt-get install -y expect
-
       - name: Deploy to cluster with password auth
         env:
           SSH_PASS: ${{ secrets.SSH_PASSWORD }}
           SSH_USER: ${{ secrets.SSH_USERNAME }}
           SSH_HOST: ${{ secrets.SSH_HOST }}
         run: |
-          expect -c "
-          set timeout 60
-          spawn rsync -avz --delete -e \"ssh -o StrictHostKeyChecking=no\" ./ \${SSH_USER}@\${SSH_HOST}:~/cvcs2026/MDN-C-CS/
+          expect << EOF
+          set timeout 120
+          spawn rsync -avz --delete -e "ssh -o StrictHostKeyChecking=no" ./ $SSH_USER@$SSH_HOST:~/cvcs2026/MDN-C-CS/
           expect {
-            \"*password:*\" {
-              send \"\${SSH_PASS}\r\"
+            "*password:*" {
+              send "$SSH_PASS\r"
               exp_continue
             }
-            \"*yes/no*\" {
-              send \"yes\r\"
+            "*yes/no*" {
+              send "yes\r"
               exp_continue
             }
             timeout { exit 1 }
             eof
           }
-          "
+          EOF
