@@ -10,37 +10,20 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Copy files to cluster
-        env:
-          SSHPASS: ${{ secrets.SSH_PASSWORD }}
-          SSH_USER: ${{ secrets.SSH_USERNAME }}
-          SSH_HOST: ${{ secrets.SSH_HOST }}
+      - name: Setup SSH Key
         run: |
-          # Install sshpass and rsync
-          sudo apt-get update -y
-          sudo apt-get install -y sshpass rsync
-
-          # Set up SSH configuration
           mkdir -p ~/.ssh
-          chmod 700 ~/.ssh
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_ed25519
+          chmod 600 ~/.ssh/id_ed25519
+          ssh-keyscan -t ed25519 "${{ secrets.SSH_HOST }}" >> ~/.ssh/known_hosts 2>/dev/null || true
 
-          # Add host to known_hosts
-          ssh-keyscan -t ed25519 "$SSH_HOST" >> ~/.ssh/known_hosts 2>/dev/null || true
-
-          # Configure SSH to use password authentication and skip pubkey
-          cat > ~/.ssh/config <<EOF
-Host *
-    StrictHostKeyChecking accept-new
-    PreferredAuthentications password,keyboard-interactive
-    PubkeyAuthentication no
-    ConnectTimeout 10
-    UserKnownHostsFile ~/.ssh/known_hosts
-EOF
-          chmod 600 ~/.ssh/config
-
-          # Use rsync to copy files with exclusions via sshpass
+      - name: Copy files to cluster
+        run: |
+          sudo apt-get update -y
+          sudo apt-get install -y rsync
           echo "Copying files to cluster..."
-          sshpass -e rsync -avz \
+          rsync -avz \
+            -e "ssh -o StrictHostKeyChecking=accept-new" \
             --exclude='.git' \
             --exclude='.github' \
             --exclude='__pycache__' \
@@ -48,4 +31,4 @@ EOF
             --exclude='.pytest_cache' \
             --exclude='.venv' \
             --exclude='.ipynb_checkpoints' \
-            . "${SSH_USER}@${SSH_HOST}:~/cvcs2026/MDN-C-CS/"
+            . "${{ secrets.SSH_USERNAME }}@${{ secrets.SSH_HOST }}:~/cvcs2026/MDN-C-CS/"
