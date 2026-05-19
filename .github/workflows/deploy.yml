@@ -16,12 +16,6 @@ jobs:
           echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/github_actions_mdn
           chmod 600 ~/.ssh/github_actions_mdn
 
-      - name: Create remote directory
-        run: |
-          ssh -o StrictHostKeyChecking=no -i ~/.ssh/github_actions_mdn \
-            ${{ secrets.SSH_USERNAME }}@${{ secrets.SSH_HOST }} \
-            "mkdir -p ~/cvcs2026/MDN-C-CS"
-
       - name: Copy files to cluster
         run: |
           rsync -avz --delete \
