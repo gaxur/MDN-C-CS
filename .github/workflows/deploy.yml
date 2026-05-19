@@ -28,6 +28,6 @@ jobs:
             sudo apt-get install -y sshpass
             sshpass -p "$SSH_PASS" scp -r -o StrictHostKeyChecking=no -o PreferredAuthentications=password -o PubkeyAuthentication=no ./ "$SSH_USER@$SSH_HOST:~/cvcs2026/MDN-C-CS/"
           else
-            echo "Error: Define SSH_PRIVATE_KEY or SSH_PASSWORD (SSH_PASS is optional fallback) in repository secrets."
+            echo "Error: Define SSH_PRIVATE_KEY or SSH_PASSWORD in repository secrets (SSH_PASS is only checked as fallback)."
             exit 1
           fi
