@@ -10,31 +10,24 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Setup SSH Key
-        run: |
-          mkdir -p ~/.ssh
-          chmod 700 ~/.ssh
-          printf '%s\n' "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_ed25519
-          chmod 600 ~/.ssh/id_ed25519
-          
-          # Debug: Verify key was written
-          echo "SSH key size: $(wc -c < ~/.ssh/id_ed25519) bytes"
-          head -1 ~/.ssh/id_ed25519
-          tail -1 ~/.ssh/id_ed25519
-          
-          ssh-keyscan -t ed25519 "${{ secrets.SSH_HOST }}" >> ~/.ssh/known_hosts 2>/dev/null || true
-          
-          # Test SSH connection with verbose output
-          echo "Testing SSH connection..."
-          ssh -vv -o StrictHostKeyChecking=accept-new -o ConnectTimeout=5 "${{ secrets.SSH_USERNAME }}@${{ secrets.SSH_HOST }}" "echo 'SSH connection successful!'" 2>&1 | head -50
-
       - name: Copy files to cluster
+        env:
+          SSH_PASS: ${{ secrets.SSH_PASSWORD }}
+          SSH_USER: ${{ secrets.SSH_USERNAME }}
+          SSH_HOST: ${{ secrets.SSH_HOST }}
         run: |
+          # Install dependencies
           sudo apt-get update -y
-          sudo apt-get install -y rsync
+          sudo apt-get install -y sshpass rsync
+
+          # Add host to known_hosts
+          mkdir -p ~/.ssh
+          ssh-keyscan -t rsa,ed25519 "$SSH_HOST" >> ~/.ssh/known_hosts 2>/dev/null || true
+
+          # Copy files using rsync with sshpass
           echo "Copying files to cluster..."
-          rsync -avz \
-            -e "ssh -o StrictHostKeyChecking=accept-new" \
+          sshpass -p "$SSH_PASS" rsync -avz \
+            --rsh="sshpass -p $SSH_PASS ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=~/.ssh/known_hosts" \
             --exclude='.git' \
             --exclude='.github' \
             --exclude='__pycache__' \
@@ -42,4 +35,6 @@ jobs:
             --exclude='.pytest_cache' \
             --exclude='.venv' \
             --exclude='.ipynb_checkpoints' \
-            . "${{ secrets.SSH_USERNAME }}@${{ secrets.SSH_HOST }}:~/cvcs2026/MDN-C-CS/"
+            . "$SSH_USER@$SSH_HOST:~/cvcs2026/MDN-C-CS/" || exit 1
+          
+          echo "Deploy completed successfully!"
