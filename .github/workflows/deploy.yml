@@ -1,14 +1,17 @@
 name: Deploy to Cluster
-
 on:
   push:
     branches: [ main ]
-
 jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+
+      - name: Install dependencies
+        run: |
+          sudo apt-get update -y
+          sudo apt-get install -y sshpass rsync
 
       - name: Copy files to cluster
         env:
@@ -16,18 +19,19 @@ jobs:
           SSH_USER: ${{ secrets.SSH_USERNAME }}
           SSH_HOST: ${{ secrets.SSH_HOST }}
         run: |
-          # Install dependencies
-          sudo apt-get update -y
-          sudo apt-get install -y sshpass rsync
-
-          # Add host to known_hosts
           mkdir -p ~/.ssh
+          # Captura la clave del host para evitar prompt interactivo
           ssh-keyscan -t rsa,ed25519 "$SSH_HOST" >> ~/.ssh/known_hosts 2>/dev/null || true
 
-          # Copy files using rsync with sshpass
           echo "Copying files to cluster..."
-          sshpass -p "$SSH_PASS" rsync -avz \
-            --rsh="sshpass -p $SSH_PASS ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=~/.ssh/known_hosts" \
+          # FIX 1: sshpass solo UNA vez, fuera del --rsh
+          # FIX 2: SSHPASS como variable de entorno para evitar problemas con caracteres especiales
+          export SSHPASS="$SSH_PASS"
+          sshpass -e rsync -avz \
+            --rsh="ssh -o StrictHostKeyChecking=no \
+                       -o UserKnownHostsFile=~/.ssh/known_hosts \
+                       -o BatchMode=no \
+                       -o PubkeyAuthentication=no" \
             --exclude='.git' \
             --exclude='.github' \
             --exclude='__pycache__' \
@@ -36,5 +40,5 @@ jobs:
             --exclude='.venv' \
             --exclude='.ipynb_checkpoints' \
             . "$SSH_USER@$SSH_HOST:~/cvcs2026/MDN-C-CS/" || exit 1
-          
+
           echo "Deploy completed successfully!"
