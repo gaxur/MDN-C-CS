@@ -8,30 +8,28 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Install dependencies
-        run: |
-          sudo apt-get update -y
-          sudo apt-get install -y sshpass rsync
-
       - name: Copy files to cluster
         env:
-          SSH_PASS: ${{ secrets.SSH_PASSWORD }}
+          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+          SSH_PASSWORD: ${{ secrets.SSH_PASS }}
           SSH_USER: ${{ secrets.SSH_USERNAME }}
           SSH_HOST: ${{ secrets.SSH_HOST }}
         run: |
+          sudo apt-get install -y sshpass
+
           mkdir -p ~/.ssh
-          # Captura la clave del host para evitar prompt interactivo
+          echo "$SSH_PRIVATE_KEY" > ~/.ssh/id_ed25519
+          chmod 600 ~/.ssh/id_ed25519
           ssh-keyscan -t rsa,ed25519 "$SSH_HOST" >> ~/.ssh/known_hosts 2>/dev/null || true
 
           echo "Copying files to cluster..."
-          # FIX 1: sshpass solo UNA vez, fuera del --rsh
-          # FIX 2: SSHPASS como variable de entorno para evitar problemas con caracteres especiales
-          export SSHPASS="$SSH_PASS"
+          export SSHPASS="$SSH_PASSWORD"
           sshpass -e rsync -avz \
-            --rsh="ssh -o StrictHostKeyChecking=no \
-                       -o UserKnownHostsFile=~/.ssh/known_hosts \
-                       -o BatchMode=no \
-                       -o PubkeyAuthentication=no" \
+            -e "ssh -i ~/.ssh/id_ed25519 \
+                    -o StrictHostKeyChecking=no \
+                    -o UserKnownHostsFile=~/.ssh/known_hosts \
+                    -o PreferredAuthentications=publickey,password \
+                    -o PubkeyAuthentication=yes" \
             --exclude='.git' \
             --exclude='.github' \
             --exclude='__pycache__' \
