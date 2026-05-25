@@ -1,36 +1,3 @@
-# Mitigation Strategy: Prompt Engineering Study
-
-## 1. Strategy Description
-- **Name**: Prompt Engineering (Strict Verification)
-- **Baseline**: Simple yes/no prompt
-- **Mitigation**: Strict prompt requiring careful visual verification
-
-## 2. Implementation
-- Modified instruction in `_build_instruction()` method
-- Baseline: "Answer only yes or no."
-- Strict: "Answer only yes or no. Verify the visual evidence carefully. 
-  If the requested object... not clearly visible, answer no."
-
-## 3. Results Comparison
-
-### LLaVA-v1.5
-| Metric | Baseline | Strict | Improvement |
-|--------|----------|--------|-------------|
-| Accuracy | X% | Y% | +Z% |
-| Hallucination Rate | A% | B% | -C% |
-
-### Qwen3
-| Metric | Baseline | Strict | Improvement |
-|--------|----------|--------|-------------|
-| Accuracy | X% | Y% | +Z% |
-| Hallucination Rate | A% | B% | -C% |
-
-## 4. Conclusions
-- The strict prompt reduces hallucinations by X%
-- Effectiveness varies by model
-- Trade-offs: ...
-
-
 # Do Vision-Language Models Really See What They Say?
 
 This project evaluates hallucination in Vision-Language Models (VLMs): cases where a model confidently describes visual content that is not actually supported by the image.
