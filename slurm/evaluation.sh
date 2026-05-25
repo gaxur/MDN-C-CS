@@ -4,7 +4,7 @@
 #SBATCH --cpus-per-task=2
 #SBATCH --mem=12G
 #SBATCH --gres=gpu:1
-#SBATCH --time=00:30:00
+#SBATCH --time=01:30:00
 #SBATCH --output=/homes/%u/cvcs2026/evaluation_%j.out
 #SBATCH --account=cvcs2026
 #SBATCH --constraint=gpu_P100_16G
