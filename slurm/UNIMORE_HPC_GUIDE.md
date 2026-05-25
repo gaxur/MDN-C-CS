@@ -98,6 +98,7 @@ cat /homes/<user>/cvcs2026/MDN-C-CS/results/qwen3/metrics.json
 | `OFFLINE` | `1` | `0` to download models during eval |
 | `DTYPE` | `auto` | `fp32`, `fp16`, `bf16` (precision level) |
 | `MITIGATION_STUDY` | `0` | `1` to compare baseline vs strict prompts |
+| `CACHE_DIR` | `data/checkpoints` | Path to model cache directory |
 
 **Output directories:**
 - `results/[model]/results.json` - All evaluation results
@@ -110,8 +111,8 @@ cat /homes/<user>/cvcs2026/MDN-C-CS/results/qwen3/metrics.json
 # Quick test: LLaVA only, 5 samples evaluated
 sbatch --export=ALL,MODEL=llava15,NUM_SAMPLES=20,MAX_SAMPLES=5 slurm/evaluation.sh
 
-# Prompt engineering study (baseline vs strict)
-sbatch --export=ALL,MITIGATION_STUDY=1 slurm/evaluation.sh
+# Full evaluation with 100 samples
+sbatch --export=ALL,NUM_SAMPLES=100 slurm/evaluation.sh
 
 # Full evaluation with specific precision
 sbatch --export=ALL,NUM_SAMPLES=1000,DTYPE=fp16 slurm/evaluation.sh
@@ -120,9 +121,47 @@ sbatch --export=ALL,NUM_SAMPLES=1000,DTYPE=fp16 slurm/evaluation.sh
 sbatch --export=ALL,OFFLINE=0 slurm/evaluation.sh
 ```
 
+### Mitigation Study - Prompt Engineering Evaluation
+
+Compare **baseline vs. strict prompting strategies** to measure hallucination reduction:
+
+```bash
+# Run mitigation study for all models
+sbatch --export=ALL,MITIGATION_STUDY=1,NUM_SAMPLES=100,MODEL=all slurm/evaluation.sh
+
+# Mitigation study for specific model only
+sbatch --export=ALL,MITIGATION_STUDY=1,NUM_SAMPLES=100,MODEL=llava15 slurm/evaluation.sh
+```
+
+**What this does:**
+
+When `MITIGATION_STUDY=1`, the evaluation script runs **two separate evaluations** for each model:
+
+1. **Baseline Mode** (suffix: `_baseline`)
+   - Prompt: "Question? Answer only yes or no."
+   - Measures baseline hallucination rates
+   - Results: `results/[model]_baseline/`
+   - Reports: `reports/[model]_baseline/`
+
+2. **Strict Mode** (suffix: `_strict`)
+   - Prompt: "Question? Answer only yes or no. Verify the visual evidence carefully. If the requested object, attribute, relation, or count is not clearly visible, answer no. Do not infer likely objects from context."
+   - Measures hallucination reduction with enhanced prompt
+   - Results: `results/[model]_strict/`
+   - Reports: `reports/[model]_strict/`
+
+**Output Comparison:**
+
+After the mitigation study completes, you can compare metrics:
+
+```bash
+# Compare baseline vs strict for LLaVA
+jq '.metrics | {baseline_accuracy, strict_accuracy, hallucination_baseline, hallucination_strict}' results/llava15_baseline/metrics.json
+jq '.metrics | {baseline_accuracy, strict_accuracy, hallucination_baseline, hallucination_strict}' results/llava15_strict/metrics.json
+```
+
 ### `jupyter_gpu.sh` - JupyterLab with GPU
 
-Launches JupyterLab on a GPU node for interactive exploration.
+Launches JupyterLab on a GPU node for interactive exploration and testing:
 
 ```bash
 sbatch slurm/jupyter_gpu.sh

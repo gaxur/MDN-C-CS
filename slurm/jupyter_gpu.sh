@@ -7,6 +7,7 @@
 #SBATCH --time=01:00:00
 #SBATCH --output=/homes/%u/cvcs2026/jupyter_%j.out
 #SBATCH --account=cvcs2026
+#SBATCH --constraint=gpu_P100_16G
 
 set -euo pipefail # Exit on error, treat unset variables as errors, and fail on pipeline errors
 

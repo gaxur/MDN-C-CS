@@ -62,6 +62,61 @@ python src/run_pipeline.py --full --offline
 
 This runs all steps: generate benchmark → evaluate models → analyze results.
 
+## Prompt-Engineering Mitigation Study
+
+To compare **baseline vs. strict prompting strategies** and measure hallucination reduction:
+
+```bash
+python src/run_pipeline.py --full --offline --mitigation-study
+```
+
+This evaluates each model twice:
+- **Baseline mode:** Standard "answer only yes or no" prompt
+- **Strict mode:** Enhanced prompt with visual verification requirements
+
+For individual models:
+
+```bash
+python src/run_pipeline.py --model llava15 --mitigation-study --offline
+python src/run_pipeline.py --model qwen3 --mitigation-study --offline
+```
+
+**Output:**
+- Results saved to `results/[model]_baseline/` and `results/[model]_strict/`
+- Reports comparing both strategies in `reports/[model]_baseline/` and `reports/[model]_strict/`
+
+**Note:** This doubles the evaluation time since each model is evaluated with both prompting strategies.
+
+## Interactive Testing with Jupyter Notebook
+
+For exploratory analysis and quick testing without command-line scripts:
+
+```bash
+# Install Jupyter (if not already installed)
+pip install jupyter
+
+# Start Jupyter Lab
+jupyter lab
+
+# Then open: notebooks/quick_test_vlms.ipynb
+```
+
+**Features:**
+- Interactive model testing on individual images
+- Visual exploration of benchmark data
+- Comparison of model responses
+- Quick iterations without full pipeline runs
+
+**Typical workflow:**
+1. Download checkpoints: `python src/download_models.py --download --model all`
+2. Generate benchmark: `python src/generate_benchmark.py --num-samples 100`
+3. Open notebook and interactively test models
+
+Use the notebook for:
+- **Debugging:** Test single images and see responses in real-time
+- **Development:** Experiment with prompts and model parameters
+- **Exploration:** Understand hallucination patterns interactively
+
 ## Key Files
 
 | File | Purpose |
