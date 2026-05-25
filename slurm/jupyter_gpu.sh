@@ -1,14 +1,14 @@
 #!/bin/bash
 #SBATCH --job-name=jupyter_vlm
 #SBATCH --partition=all_serial
-#SBATCH --cpus-per-task=4
-#SBATCH --mem=16G
+#SBATCH --cpus-per-task=2
+#SBATCH --mem=8G
 #SBATCH --gres=gpu:1
-#SBATCH --time=04:00:00
+#SBATCH --time=01:00:00
 #SBATCH --output=/homes/%u/cvcs2026/jupyter_%j.out
 #SBATCH --account=cvcs2026
 
-set -euo pipefail
+set -euo pipefail # Exit on error, treat unset variables as errors, and fail on pipeline errors
 
 # Launch JupyterLab with GPU access on the UNIMORE HPC cluster.
 

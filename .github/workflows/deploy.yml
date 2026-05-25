@@ -20,14 +20,17 @@ jobs:
           echo "$SSH_PRIVATE_KEY" | base64 -d > ~/.ssh/id_ed25519
           chmod 600 ~/.ssh/id_ed25519
 
-          # Debug: verificar que la clave es válida
+          # Debug: verify the private key
           ssh-keygen -y -f ~/.ssh/id_ed25519 || echo "CLAVE INVALIDA"
 
+          # Add the SSH host to known_hosts to prevent host key verification issues
           ssh-keyscan -t rsa,ed25519 "$SSH_HOST" >> ~/.ssh/known_hosts 2>/dev/null || true
 
           echo "Copying files to cluster..."
           export SSHPASS="$SSH_PASSWORD"
-          sshpass -e rsync -avz \
+          
+          # Use rsync to copy files, excluding specified directories and files
+          sshpass -e rsync -avz --delete --checksum \
             -e "ssh -i ~/.ssh/id_ed25519 \
                     -o StrictHostKeyChecking=no \
                     -o UserKnownHostsFile=~/.ssh/known_hosts \
@@ -40,6 +43,9 @@ jobs:
             --exclude='.pytest_cache' \
             --exclude='.venv' \
             --exclude='.ipynb_checkpoints' \
+            --exclude='data/' \
+            --exclude='results/' \
+            --exclude='reports/' \
             . "$SSH_USER@$SSH_HOST:~/cvcs2026/MDN-C-CS/" || exit 1
 
           echo "Deploy completed successfully!"

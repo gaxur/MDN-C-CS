@@ -1,5 +1,9 @@
 # Quick Start - MDN-C-CS
 
+> **Running on UNIMORE HPC Cluster?** See [slurm/UNIMORE_HPC_GUIDE.md](slurm/UNIMORE_HPC_GUIDE.md) instead.
+
+This guide covers **local execution** (development, testing, small-scale runs).
+
 ## Step 1: Prepare the Environment
 
 ```bash
@@ -9,6 +13,8 @@ python3 -m venv venv
 source venv/bin/activate
 pip install -r requirements.txt
 ```
+
+**Requirements:** Python 3.10+, pip, GPU (CUDA 11.8+) for practical evaluation
 
 ## Step 2: Download Checkpoints
 
@@ -48,52 +54,32 @@ python src/analyze_results.py --results results/llava15/results.json --metrics r
 python src/analyze_results.py --results results/qwen3/results.json --metrics results/qwen3/metrics.json --output reports/qwen3
 ```
 
-## Step 6: Run the Mitigation Study
+## Full Workflow (One Command)
 
 ```bash
-python src/run_pipeline.py --full --offline --mitigation-study
+python src/run_pipeline.py --full --offline
 ```
 
-This compares the baseline yes/no prompt against a stricter verification prompt.
+This runs all steps: generate benchmark → evaluate models → analyze results.
 
-## UNIMORE HPC Usage
+## Key Files
 
-On the cluster:
+| File | Purpose |
+|------|---------|
+| `src/download_models.py` | Download model checkpoints |
+| `src/generate_benchmark.py` | Generate synthetic benchmark |
+| `src/evaluate_vlms.py` | Run model evaluation |
+| `src/analyze_results.py` | Generate metrics and visualizations |
+| `src/run_pipeline.py` | End-to-end pipeline (all steps) |
+| `notebooks/quick_test_vlms.ipynb` | Interactive testing notebook |
 
-```bash
-ssh <user>@ailb-login-02.ing.unimore.it
-cd /homes/<user>/cvcs2026/MDN-C-CS
+## Output
 
-bash slurm/setup_cluster.sh
-sbatch slurm/download_models.sh
-sbatch slurm/evaluation.sh
-```
+- **Results:** `results/[model]/results.json`, `metrics.json`
+- **Reports:** `reports/[model]/` (plots, visualizations, summary)
 
-Small queue test:
+## Notes
 
-```bash
-sbatch --export=ALL,MODEL=llava15,NUM_SAMPLES=20,MAX_SAMPLES=5 slurm/evaluation.sh
-```
-
-Cluster mitigation study:
-
-```bash
-sbatch --export=ALL,MITIGATION_STUDY=1 slurm/evaluation.sh
-```
-
-## Important Files
-
-| File | Description |
-|------|-------------|
-| `run.py` | Interactive project menu |
-| `src/download_models.py` | Checkpoint downloader |
-| `src/generate_benchmark.py` | Synthetic benchmark generator |
-| `src/evaluate_vlms.py` | VLM evaluator |
-| `src/analyze_results.py` | Metrics, plots, and reports |
-| `src/run_pipeline.py` | End-to-end pipeline |
-| `notebooks/01_load_models.ipynb` | Interactive notebook |
-| `slurm/` | HPC scripts |
-
-## Is a GPU Required?
-
-Yes for real evaluation. The 7B/8B VLMs are not practical on CPU. CPU mode exists only for tiny smoke tests with `--allow-cpu`.
+- **GPU Required:** 7B/8B models are impractical on CPU. Use `--allow-cpu` only for tiny smoke tests
+- **Offline Mode:** Use `--offline` to load checkpoints from local `data/checkpoints/`
+- **For Cluster:** See [slurm/UNIMORE_HPC_GUIDE.md](slurm/UNIMORE_HPC_GUIDE.md)

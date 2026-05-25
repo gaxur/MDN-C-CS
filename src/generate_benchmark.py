@@ -72,9 +72,10 @@ class BenchmarkGenerator:
 
         if generate_images:
             self.images_dir.mkdir(parents=True, exist_ok=True)
-
+        
+        # Loop for each sample, determine question type and generate entry + scene
         for i in range(num_samples):
-            question_type = QUESTION_TYPES[i % len(QUESTION_TYPES)]
+            question_type = QUESTION_TYPES[i % len(QUESTION_TYPES)] # In our case 100/4 = 25 questions per question type
             image_id = f"image_{i:04d}.jpg"
             entry, scene = self._make_entry(question_type, image_id)
 
@@ -99,6 +100,7 @@ class BenchmarkGenerator:
         return [str(self.images_dir / f"image_{i:04d}.jpg") for i in range(num_images)]
 
     def _make_entry(self, question_type: str, image_id: str) -> Tuple[Dict[str, Any], Dict[str, Any]]:
+        """Create a single benchmark entry and its corresponding scene."""
         if question_type == "object_absent":
             return self._object_absent_entry(image_id)
         if question_type == "attribute":
@@ -110,6 +112,7 @@ class BenchmarkGenerator:
         raise ValueError(f"Unsupported question type: {question_type}")
 
     def _object_absent_entry(self, image_id: str) -> Tuple[Dict[str, Any], Dict[str, Any]]:
+        """Generate a question about an absent object."""
         present_shapes = random.sample(list(SHAPES), 2)
         absent_shape = random.choice([shape for shape in SHAPES if shape not in present_shapes])
         objects = [
@@ -125,6 +128,7 @@ class BenchmarkGenerator:
         return self._entry(image_id, question, "object_absent", scene, {"absent_object": absent_shape}), scene
 
     def _attribute_entry(self, image_id: str) -> Tuple[Dict[str, Any], Dict[str, Any]]:
+        """Generate a question about an object's attribute (color)."""
         target_shape = random.choice(list(SHAPES))
         true_color, wrong_color = random.sample(list(COLORS), 2)
         distractor_shape = random.choice([shape for shape in SHAPES if shape != target_shape])
@@ -146,6 +150,7 @@ class BenchmarkGenerator:
         return self._entry(image_id, question, "attribute", scene, metadata), scene
 
     def _relation_entry(self, image_id: str) -> Tuple[Dict[str, Any], Dict[str, Any]]:
+        """Generate a question about the spatial relation between two objects."""
         shape1, shape2 = random.sample(list(SHAPES), 2)
         true_relation = random.choice(list(RELATION_TEXT))
         wrong_relation = random.choice([rel for rel in RELATION_TEXT if rel != true_relation])
@@ -169,6 +174,7 @@ class BenchmarkGenerator:
         return self._entry(image_id, question, "relation", scene, metadata), scene
 
     def _count_entry(self, image_id: str) -> Tuple[Dict[str, Any], Dict[str, Any]]:
+        """Generate a question about the count of objects in the scene."""
         target_shape = random.choice(list(SHAPES))
         true_count = random.choice([2, 3, 4])
         wrong_count = random.choice([count for count in [1, 2, 3, 4, 5] if count != true_count])
@@ -200,6 +206,7 @@ class BenchmarkGenerator:
         scene: Dict[str, Any],
         metadata: Dict[str, Any],
     ) -> Dict[str, Any]:
+        """Helper to create a benchmark entry with consistent structure."""
         present_objects = [
             {"shape": obj["shape"], "color": obj["color"], "position": obj["position"]}
             for obj in scene["objects"]
@@ -215,6 +222,7 @@ class BenchmarkGenerator:
         }
 
     def _draw_scene(self, scene: Dict[str, Any], output_path: Path) -> None:
+        """Draw the synthetic scene as an image file."""
         try:
             from PIL import Image, ImageDraw
         except ImportError as exc:
@@ -233,6 +241,7 @@ class BenchmarkGenerator:
         img.save(output_path, quality=95)
 
     def _draw_shape(self, draw: Any, shape: str, center: Tuple[int, int], radius: int, color: Tuple[int, int, int]) -> None:
+        """Draw a single shape on the image."""
         x, y = center
         bbox = [(x - radius, y - radius), (x + radius, y + radius)]
         outline = (35, 35, 35)
@@ -248,6 +257,7 @@ class BenchmarkGenerator:
             raise ValueError(f"Unsupported shape: {shape}")
 
     def _position_to_xy(self, position: str) -> Tuple[int, int]:
+        """Convert a position name to (x, y) coordinates."""
         size = self.image_size
         positions = {
             "left": (int(size * 0.32), int(size * 0.5)),
@@ -263,6 +273,7 @@ class BenchmarkGenerator:
         return positions[position]
 
     def _positions_for_relation(self, relation: str) -> Tuple[str, str]:
+        """Return positions for two objects based on the specified relation."""
         if relation == "left_of":
             return "left", "right"
         if relation == "right_of":
@@ -274,6 +285,7 @@ class BenchmarkGenerator:
             raise ValueError(f"Unsupported relation: {relation}")
 
     def _normalize_split(self, split: Dict[str, float]) -> Dict[str, float]:
+        """Normalize the split dictionary to ensure it sums to 1."""
         expected = {"train", "val", "test"}
         if set(split) != expected:
             raise ValueError(f"Split must contain exactly: {sorted(expected)}")
@@ -283,6 +295,7 @@ class BenchmarkGenerator:
         return {key: value / total for key, value in split.items()}
 
     def _split_for_index(self, index: int, total: int, split: Dict[str, float]) -> str:
+        """Determine the split (train/val/test) for a given index based on the split ratios."""
         train_end = int(total * split["train"])
         val_end = int(total * (split["train"] + split["val"]))
         if index < train_end:
@@ -292,6 +305,7 @@ class BenchmarkGenerator:
         return "test"
 
     def _save_benchmark(self, benchmark: Dict[str, List[Dict[str, Any]]]) -> None:
+        """Save the benchmark splits as JSON files."""
         for split_name, entries in benchmark.items():
             filename = self.output_dir / f"benchmark_{split_name}.json"
             with open(filename, "w", encoding="utf-8") as f:
@@ -315,6 +329,7 @@ def main() -> None:
     parser.add_argument("--no-images", action="store_true", help="Do not generate synthetic images")
     args = parser.parse_args()
 
+    # Ensure reproducibility of the benchmark generation, delete if you want different scenes each time
     random.seed(args.seed)
 
     print("=" * 60)

@@ -1,23 +1,23 @@
 #!/bin/bash
 #SBATCH --job-name=vlm_evaluation
 #SBATCH --partition=all_serial
-#SBATCH --cpus-per-task=8
-#SBATCH --mem=32G
+#SBATCH --cpus-per-task=2
+#SBATCH --mem=12G
 #SBATCH --gres=gpu:1
-#SBATCH --time=08:00:00
+#SBATCH --time=00:30:00
 #SBATCH --output=/homes/%u/cvcs2026/evaluation_%j.out
 #SBATCH --account=cvcs2026
 
-set -euo pipefail
+set -euo pipefail # Exit on error, treat unset variables as errors, and fail on pipeline errors
 
 # Run the full VLM hallucination evaluation.
 # Configurable variables:
-#   sbatch --export=ALL,NUM_SAMPLES=200,MODEL=llava,OFFLINE=1 slurm/evaluation.sh
+#   sbatch --export=ALL,NUM_SAMPLES=100,MODEL=llava,OFFLINE=1 slurm/evaluation.sh
 
 VENV_PATH="${VENV_PATH:-/homes/${USER}/cvcs2026/venv}"
 PROJECT_PATH="${PROJECT_PATH:-/homes/${USER}/cvcs2026/MDN-C-CS}"
-NUM_SAMPLES="${NUM_SAMPLES:-100}"
-MAX_SAMPLES="${MAX_SAMPLES:-}"
+NUM_SAMPLES="${NUM_SAMPLES:-20}" # Number of benchmark samples to evaluate
+MAX_SAMPLES="${MAX_SAMPLES:-}" # Optional limit on the number of samples to evaluate (for quick testing)
 MODEL="${MODEL:-all}"
 OFFLINE="${OFFLINE:-1}"
 DTYPE="${DTYPE:-auto}"
@@ -48,6 +48,7 @@ if [ -n "${MAX_SAMPLES}" ]; then
     eval_extra+=(--max-samples "${MAX_SAMPLES}")
 fi
 
+# Define functions to run evaluation for a model and optionally for the mitigation study
 run_model() {
     local model_name="$1"
     local prompt_mode="$2"
@@ -66,6 +67,7 @@ run_model() {
         --output "reports/${model_name}${suffix}"
 }
 
+# For the mitigation study, we run both the baseline and strict prompting modes. For the main evaluation, we only run the baseline prompting mode.
 run_model_or_study() {
     local model_name="$1"
     if [ "${MITIGATION_STUDY}" = "1" ]; then

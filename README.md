@@ -1,4 +1,37 @@
-# MDN-C-CS: Do Vision-Language Models Really See What They Say?
+# Mitigation Strategy: Prompt Engineering Study
+
+## 1. Strategy Description
+- **Name**: Prompt Engineering (Strict Verification)
+- **Baseline**: Simple yes/no prompt
+- **Mitigation**: Strict prompt requiring careful visual verification
+
+## 2. Implementation
+- Modified instruction in `_build_instruction()` method
+- Baseline: "Answer only yes or no."
+- Strict: "Answer only yes or no. Verify the visual evidence carefully. 
+  If the requested object... not clearly visible, answer no."
+
+## 3. Results Comparison
+
+### LLaVA-v1.5
+| Metric | Baseline | Strict | Improvement |
+|--------|----------|--------|-------------|
+| Accuracy | X% | Y% | +Z% |
+| Hallucination Rate | A% | B% | -C% |
+
+### Qwen3
+| Metric | Baseline | Strict | Improvement |
+|--------|----------|--------|-------------|
+| Accuracy | X% | Y% | +Z% |
+| Hallucination Rate | A% | B% | -C% |
+
+## 4. Conclusions
+- The strict prompt reduces hallucinations by X%
+- Effectiveness varies by model
+- Trade-offs: ...
+
+
+# Do Vision-Language Models Really See What They Say?
 
 This project evaluates hallucination in Vision-Language Models (VLMs): cases where a model confidently describes visual content that is not actually supported by the image.
 
@@ -42,68 +75,42 @@ MDN-C-CS/
 ├── src/                # Python source code
 ├── data/               # Generated benchmark data and checkpoints
 │   └── checkpoints/    # Downloaded model checkpoints
-├── reports/            # Report template and generated plots
+├── reports/            # Generated plots
+├── report/             
+│   └── VLM_Report.pdf  # PDF report
 ├── results/            # Evaluation outputs
 └── slurm/              # GPU-cluster scripts
 ```
 
-## Installation
+## Installation & Quick Start
 
-```bash
-python -m venv venv
-source venv/bin/activate
-pip install -r requirements.txt
-```
+For local execution, see [QUICKSTART.md](QUICKSTART.md).
 
-## Quick Usage
+For cluster execution (UNIMORE HPC), see [slurm/UNIMORE_HPC_GUIDE.md](slurm/UNIMORE_HPC_GUIDE.md).
 
-```bash
-# Generate benchmark and synthetic images
-python src/generate_benchmark.py --num-samples 100 --output-dir data
+## Mitigation Strategy
 
-# Download default checkpoints without loading them into memory
-python src/download_models.py --download --model all --cache-dir data/checkpoints
+The project implements a **prompt-engineering mitigation strategy** that compares:
+- **Baseline**: Simple yes/no prompt
+- **Strict**: Enhanced prompt requesting careful visual verification
 
-# Evaluate default models on a GPU
-python src/evaluate_vlms.py --model llava15 --offline --output results/llava15
-python src/evaluate_vlms.py --model qwen3 --offline --output results/qwen3
-
-# Analyze results
-python src/analyze_results.py --results results/llava15/results.json --metrics results/llava15/metrics.json --output reports/llava15
-python src/analyze_results.py --results results/qwen3/results.json --metrics results/qwen3/metrics.json --output reports/qwen3
-```
-
-## Mitigation Study
-
-The project includes one mitigation strategy: a stricter prompt that asks the model to avoid inferring unsupported visual content.
+Run the full mitigation study:
 
 ```bash
 python src/run_pipeline.py --full --offline --mitigation-study
 ```
 
-This creates separate result folders such as `results/llava15_baseline` and `results/llava15_strict`.
+This creates separate result folders (`results/[model]_baseline/` and `results/[model]_strict/`) for comparison.
 
-## GPU Cluster Usage
-
-See [slurm/README.md](slurm/README.md) for the recommended HPC workflow.
-
-Typical cluster run:
-
-```bash
-bash slurm/setup_cluster.sh
-sbatch slurm/download_models.sh
-sbatch slurm/evaluation.sh
-```
-
-Mitigation study on the cluster:
+**Cluster execution:**
 
 ```bash
 sbatch --export=ALL,MITIGATION_STUDY=1 slurm/evaluation.sh
 ```
 
-## Remaining Scientific Extensions
+## HPC Cluster Usage
 
-The implementation is ready for the project workflow, but the final report should still include results from actual cluster runs. For a stronger submission, extend the synthetic benchmark with real-image subsets from MSCOCO, Visual Genome, MMHal-Bench, or HallusionBench, and compare the synthetic findings against those references.
+See [slurm/UNIMORE_HPC_GUIDE.md](slurm/UNIMORE_HPC_GUIDE.md) for the recommended UNIMORE HPC workflow.
 
 ## References
 

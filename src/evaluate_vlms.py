@@ -121,6 +121,7 @@ class VLMRunner:
         print(f"[OK] Loaded {self.model_name} on {self.device}")
 
     def _load_model(self) -> None:
+        """Load the model and processor, trying local cache first if available."""
         local_path = self.cache_dir / self.config["local_dir"]
         source = str(local_path) if local_path.exists() else self.config["repo_id"]
         if not local_path.exists():
@@ -192,6 +193,7 @@ class VLMRunner:
         return self.processor.batch_decode(output, skip_special_tokens=True)[0].strip()
 
     def _prepare_inputs(self, image: "Image.Image", prompt: str) -> Dict[str, Any]:
+        """Prepare model inputs based on the prompting strategy."""
         instruction = self._build_instruction(prompt)
         if self.config["prompt_family"] == "llava":
             text = f"USER: <image>\n{instruction}\nASSISTANT:"
@@ -208,6 +210,7 @@ class VLMRunner:
         return self.processor(text=[text], images=[image], return_tensors="pt").to(self.input_device)
 
     def _build_instruction(self, question: str) -> str:
+        """Build a prompting instruction based on the selected strategy."""
         if self.prompt_mode == "strict":
             return (
                 f"{question}\n"

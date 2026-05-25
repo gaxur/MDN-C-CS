@@ -157,7 +157,7 @@ def run_full_pipeline(
     prompt_mode: str = "baseline",
     mitigation_study: bool = False,
 ) -> bool:
-    """Generate data, evaluate selected models, and analyze outputs."""
+    """Generate benchmark (data), evaluate selected models, and analyze outputs."""
     if not step_generate_benchmark(num_samples=num_samples):
         return False
 

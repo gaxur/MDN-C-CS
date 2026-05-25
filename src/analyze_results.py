@@ -71,7 +71,7 @@ def metrics_table(metrics: Dict[str, Any]) -> "pd.DataFrame":
             "Type": qtype,
             "Total": metric["total"],
             "Correct": metric["correct"],
-            "Accuracy": metric["accuracy"] * 100,
+            "Accuracy": f"{metric['accuracy'] * 100:.1f}",
         })
     return pd.DataFrame(data)
 

@@ -1,0 +1,1883 @@
+[
+  {
+    "image_id": "image_0000.jpg",
+    "question": "Is there a square in this image?",
+    "ground_truth": "no",
+    "question_type": "object_absent",
+    "answer_options": [
+      "yes",
+      "no"
+    ],
+    "present_objects": [
+      {
+        "shape": "triangle",
+        "color": "orange",
+        "position": "left"
+      },
+      {
+        "shape": "circle",
+        "color": "green",
+        "position": "right"
+      }
+    ],
+    "absent_object": "square"
+  },
+  {
+    "image_id": "image_0001.jpg",
+    "question": "Does the circle appear red?",
+    "ground_truth": "no",
+    "question_type": "attribute",
+    "answer_options": [
+      "yes",
+      "no"
+    ],
+    "present_objects": [
+      {
+        "shape": "circle",
+        "color": "blue",
+        "position": "center"
+      },
+      {
+        "shape": "square",
+        "color": "purple",
+        "position": "bottom_right"
+      }
+    ],
+    "target_object": "circle",
+    "true_color": "blue",
+    "claimed_color": "red"
+  },
+  {
+    "image_id": "image_0002.jpg",
+    "question": "Does the circle appear to the right of the triangle?",
+    "ground_truth": "no",
+    "question_type": "relation",
+    "answer_options": [
+      "yes",
+      "no"
+    ],
+    "present_objects": [
+      {
+        "shape": "circle",
+        "color": "blue",
+        "position": "left"
+      },
+      {
+        "shape": "triangle",
+        "color": "purple",
+        "position": "right"
+      }
+    ],
+    "object_1": "circle",
+    "object_2": "triangle",
+    "true_relation": "to the left of",
+    "claimed_relation": "to the right of"
+  },
+  {
+    "image_id": "image_0003.jpg",
+    "question": "Is the number of circles equal to 2?",
+    "ground_truth": "no",
+    "question_type": "count",
+    "answer_options": [
+      "yes",
+      "no"
+    ],
+    "present_objects": [
+      {
+        "shape": "circle",
+        "color": "orange",
+        "position": "top_left"
+      },
+      {
+        "shape": "circle",
+        "color": "orange",
+        "position": "top_right"
+      },
+      {
+        "shape": "circle",
+        "color": "orange",
+        "position": "bottom_left"
+      },
+      {
+        "shape": "circle",
+        "color": "orange",
+        "position": "bottom_right"
+      },
+      {
+        "shape": "triangle",
+        "color": "blue",
+        "position": "center"
+      }
+    ],
+    "target_object": "circle",
+    "true_count": 4,
+    "claimed_count": 2
+  },
+  {
+    "image_id": "image_0004.jpg",
+    "question": "Do you see a circle in the picture?",
+    "ground_truth": "no",
+    "question_type": "object_absent",
+    "answer_options": [
+      "yes",
+      "no"
+    ],
+    "present_objects": [
+      {
+        "shape": "triangle",
+        "color": "blue",
+        "position": "left"
+      },
+      {
+        "shape": "square",
+        "color": "orange",
+        "position": "right"
+      }
+    ],
+    "absent_object": "circle"
+  },
+  {
+    "image_id": "image_0005.jpg",
+    "question": "Is the square blue?",
+    "ground_truth": "no",
+    "question_type": "attribute",
+    "answer_options": [
+      "yes",
+      "no"
+    ],
+    "present_objects": [
+      {
+        "shape": "square",
+        "color": "green",
+        "position": "center"
+      },
+      {
+        "shape": "circle",
+        "color": "green",
+        "position": "bottom_right"
+      }
+    ],
+    "target_object": "square",
+    "true_color": "green",
+    "claimed_color": "blue"
+  },
+  {
+    "image_id": "image_0006.jpg",
+    "question": "Is the circle located above the square?",
+    "ground_truth": "no",
+    "question_type": "relation",
+    "answer_options": [
+      "yes",
+      "no"
+    ],
+    "present_objects": [
+      {
+        "shape": "circle",
+        "color": "green",
+        "position": "left"
+      },
+      {
+        "shape": "square",
+        "color": "purple",
+        "position": "right"
+      }
+    ],
+    "object_1": "circle",
+    "object_2": "square",
+    "true_relation": "to the left of",
+    "claimed_relation": "above"
+  },
+  {
+    "image_id": "image_0007.jpg",
+    "question": "Are there 5 circles in this image?",
+    "ground_truth": "no",
+    "question_type": "count",
+    "answer_options": [
+      "yes",
+      "no"
+    ],
+    "present_objects": [
+      {
+        "shape": "circle",
+        "color": "purple",
+        "position": "top_left"
+      },
+      {
+        "shape": "circle",
+        "color": "purple",
+        "position": "top_right"
+      },
+      {
+        "shape": "circle",
+        "color": "purple",
+        "position": "bottom_left"
+      },
+      {
+        "shape": "circle",
+        "color": "purple",
+        "position": "bottom_right"
+      },
+      {
+        "shape": "square",
+        "color": "yellow",
+        "position": "center"
+      }
+    ],
+    "target_object": "circle",
+    "true_count": 4,
+    "claimed_count": 5
+  },
+  {
+    "image_id": "image_0008.jpg",
+    "question": "Is a circle present in the image?",
+    "ground_truth": "no",
+    "question_type": "object_absent",
+    "answer_options": [
+      "yes",
+      "no"
+    ],
+    "present_objects": [
+      {
+        "shape": "triangle",
+        "color": "purple",
+        "position": "left"
+      },
+      {
+        "shape": "square",
+        "color": "blue",
+        "position": "right"
+      }
+    ],
+    "absent_object": "circle"
+  },
+  {
+    "image_id": "image_0009.jpg",
+    "question": "Is the circle blue?",
+    "ground_truth": "no",
+    "question_type": "attribute",
+    "answer_options": [
+      "yes",
+      "no"
+    ],
+    "present_objects": [
+      {
+        "shape": "circle",
+        "color": "red",
+        "position": "center"
+      },
+      {
+        "shape": "triangle",
+        "color": "red",
+        "position": "bottom_right"
+      }
+    ],
+    "target_object": "circle",
+    "true_color": "red",
+    "claimed_color": "blue"
+  },
+  {
+    "image_id": "image_0010.jpg",
+    "question": "Is the circle to the right of the square?",
+    "ground_truth": "no",
+    "question_type": "relation",
+    "answer_options": [
+      "yes",
+      "no"
+    ],
+    "present_objects": [
+      {
+        "shape": "circle",
+        "color": "orange",
+        "position": "top"
+      },
+      {
+        "shape": "square",
+        "color": "green",
+        "position": "bottom"
+      }
+    ],
+    "object_1": "circle",
+    "object_2": "square",
+    "true_relation": "above",
+    "claimed_relation": "to the right of"
+  },
+  {
+    "image_id": "image_0011.jpg",
+    "question": "Do you see exactly 2 squares?",
+    "ground_truth": "no",
+    "question_type": "count",
+    "answer_options": [
+      "yes",
+      "no"
+    ],
+    "present_objects": [
+      {
+        "shape": "square",
+        "color": "orange",
+        "position": "top_left"
+      },
+      {
+        "shape": "square",
+        "color": "orange",
+        "position": "top_right"
+      },
+      {
+        "shape": "square",
+        "color": "orange",
+        "position": "bottom_left"
+      },
+      {
+        "shape": "triangle",
+        "color": "orange",
+        "position": "center"
+      }
+    ],
+    "target_object": "square",
+    "true_count": 3,
+    "claimed_count": 2
+  },
+  {
+    "image_id": "image_0012.jpg",
+    "question": "Is there a square in this image?",
+    "ground_truth": "no",
+    "question_type": "object_absent",
+    "answer_options": [
+      "yes",
+      "no"
+    ],
+    "present_objects": [
+      {
+        "shape": "triangle",
+        "color": "purple",
+        "position": "left"
+      },
+      {
+        "shape": "circle",
+        "color": "orange",
+        "position": "right"
+      }
+    ],
+    "absent_object": "square"
+  },
+  {
+    "image_id": "image_0013.jpg",
+    "question": "Is the circle orange in color?",
+    "ground_truth": "no",
+    "question_type": "attribute",
+    "answer_options": [
+      "yes",
+      "no"
+    ],
+    "present_objects": [
+      {
+        "shape": "circle",
+        "color": "yellow",
+        "position": "center"
+      },
+      {
+        "shape": "triangle",
+        "color": "orange",
+        "position": "bottom_right"
+      }
+    ],
+    "target_object": "circle",
+    "true_color": "yellow",
+    "claimed_color": "orange"
+  },
+  {
+    "image_id": "image_0014.jpg",
+    "question": "Is the triangle located to the left of the circle?",
+    "ground_truth": "no",
+    "question_type": "relation",
+    "answer_options": [
+      "yes",
+      "no"
+    ],
+    "present_objects": [
+      {
+        "shape": "triangle",
+        "color": "blue",
+        "position": "top"
+      },
+      {
+        "shape": "circle",
+        "color": "red",
+        "position": "bottom"
+      }
+    ],
+    "object_1": "triangle",
+    "object_2": "circle",
+    "true_relation": "above",
+    "claimed_relation": "to the left of"
+  },
+  {
+    "image_id": "image_0015.jpg",
+    "question": "Do you see exactly 1 squares?",
+    "ground_truth": "no",
+    "question_type": "count",
+    "answer_options": [
+      "yes",
+      "no"
+    ],
+    "present_objects": [
+      {
+        "shape": "square",
+        "color": "blue",
+        "position": "top_left"
+      },
+      {
+        "shape": "square",
+        "color": "blue",
+        "position": "top_right"
+      },
+      {
+        "shape": "square",
+        "color": "blue",
+        "position": "bottom_left"
+      },
+      {
+        "shape": "triangle",
+        "color": "blue",
+        "position": "center"
+      }
+    ],
+    "target_object": "square",
+    "true_count": 3,
+    "claimed_count": 1
+  },
+  {
+    "image_id": "image_0016.jpg",
+    "question": "Is there a circle in this image?",
+    "ground_truth": "no",
+    "question_type": "object_absent",
+    "answer_options": [
+      "yes",
+      "no"
+    ],
+    "present_objects": [
+      {
+        "shape": "square",
+        "color": "blue",
+        "position": "left"
+      },
+      {
+        "shape": "triangle",
+        "color": "green",
+        "position": "right"
+      }
+    ],
+    "absent_object": "circle"
+  },
+  {
+    "image_id": "image_0017.jpg",
+    "question": "Is the circle purple in color?",
+    "ground_truth": "no",
+    "question_type": "attribute",
+    "answer_options": [
+      "yes",
+      "no"
+    ],
+    "present_objects": [
+      {
+        "shape": "circle",
+        "color": "orange",
+        "position": "center"
+      },
+      {
+        "shape": "triangle",
+        "color": "orange",
+        "position": "bottom_right"
+      }
+    ],
+    "target_object": "circle",
+    "true_color": "orange",
+    "claimed_color": "purple"
+  },
+  {
+    "image_id": "image_0018.jpg",
+    "question": "Is the square located to the left of the triangle?",
+    "ground_truth": "no",
+    "question_type": "relation",
+    "answer_options": [
+      "yes",
+      "no"
+    ],
+    "present_objects": [
+      {
+        "shape": "square",
+        "color": "blue",
+        "position": "top"
+      },
+      {
+        "shape": "triangle",
+        "color": "purple",
+        "position": "bottom"
+      }
+    ],
+    "object_1": "square",
+    "object_2": "triangle",
+    "true_relation": "above",
+    "claimed_relation": "to the left of"
+  },
+  {
+    "image_id": "image_0019.jpg",
+    "question": "Is the number of circles equal to 1?",
+    "ground_truth": "no",
+    "question_type": "count",
+    "answer_options": [
+      "yes",
+      "no"
+    ],
+    "present_objects": [
+      {
+        "shape": "circle",
+        "color": "blue",
+        "position": "top_left"
+      },
+      {
+        "shape": "circle",
+        "color": "blue",
+        "position": "top_right"
+      },
+      {
+        "shape": "square",
+        "color": "orange",
+        "position": "center"
+      }
+    ],
+    "target_object": "circle",
+    "true_count": 2,
+    "claimed_count": 1
+  },
+  {
+    "image_id": "image_0020.jpg",
+    "question": "Do you see a square in the picture?",
+    "ground_truth": "no",
+    "question_type": "object_absent",
+    "answer_options": [
+      "yes",
+      "no"
+    ],
+    "present_objects": [
+      {
+        "shape": "triangle",
+        "color": "yellow",
+        "position": "left"
+      },
+      {
+        "shape": "circle",
+        "color": "purple",
+        "position": "right"
+      }
+    ],
+    "absent_object": "square"
+  },
+  {
+    "image_id": "image_0021.jpg",
+    "question": "Is the triangle purple in color?",
+    "ground_truth": "no",
+    "question_type": "attribute",
+    "answer_options": [
+      "yes",
+      "no"
+    ],
+    "present_objects": [
+      {
+        "shape": "triangle",
+        "color": "green",
+        "position": "center"
+      },
+      {
+        "shape": "circle",
+        "color": "orange",
+        "position": "bottom_right"
+      }
+    ],
+    "target_object": "triangle",
+    "true_color": "green",
+    "claimed_color": "purple"
+  },
+  {
+    "image_id": "image_0022.jpg",
+    "question": "Is the circle to the left of the square?",
+    "ground_truth": "no",
+    "question_type": "relation",
+    "answer_options": [
+      "yes",
+      "no"
+    ],
+    "present_objects": [
+      {
+        "shape": "circle",
+        "color": "green",
+        "position": "top"
+      },
+      {
+        "shape": "square",
+        "color": "yellow",
+        "position": "bottom"
+      }
+    ],
+    "object_1": "circle",
+    "object_2": "square",
+    "true_relation": "above",
+    "claimed_relation": "to the left of"
+  },
+  {
+    "image_id": "image_0023.jpg",
+    "question": "Are there 4 squares in this image?",
+    "ground_truth": "no",
+    "question_type": "count",
+    "answer_options": [
+      "yes",
+      "no"
+    ],
+    "present_objects": [
+      {
+        "shape": "square",
+        "color": "purple",
+        "position": "top_left"
+      },
+      {
+        "shape": "square",
+        "color": "purple",
+        "position": "top_right"
+      },
+      {
+        "shape": "circle",
+        "color": "purple",
+        "position": "center"
+      }
+    ],
+    "target_object": "square",
+    "true_count": 2,
+    "claimed_count": 4
+  },
+  {
+    "image_id": "image_0024.jpg",
+    "question": "Is there a circle in this image?",
+    "ground_truth": "no",
+    "question_type": "object_absent",
+    "answer_options": [
+      "yes",
+      "no"
+    ],
+    "present_objects": [
+      {
+        "shape": "triangle",
+        "color": "blue",
+        "position": "left"
+      },
+      {
+        "shape": "square",
+        "color": "green",
+        "position": "right"
+      }
+    ],
+    "absent_object": "circle"
+  },
+  {
+    "image_id": "image_0025.jpg",
+    "question": "Is the triangle red?",
+    "ground_truth": "no",
+    "question_type": "attribute",
+    "answer_options": [
+      "yes",
+      "no"
+    ],
+    "present_objects": [
+      {
+        "shape": "triangle",
+        "color": "purple",
+        "position": "center"
+      },
+      {
+        "shape": "square",
+        "color": "yellow",
+        "position": "bottom_right"
+      }
+    ],
+    "target_object": "triangle",
+    "true_color": "purple",
+    "claimed_color": "red"
+  },
+  {
+    "image_id": "image_0026.jpg",
+    "question": "Does the circle appear to the left of the square?",
+    "ground_truth": "no",
+    "question_type": "relation",
+    "answer_options": [
+      "yes",
+      "no"
+    ],
+    "present_objects": [
+      {
+        "shape": "circle",
+        "color": "red",
+        "position": "top"
+      },
+      {
+        "shape": "square",
+        "color": "blue",
+        "position": "bottom"
+      }
+    ],
+    "object_1": "circle",
+    "object_2": "square",
+    "true_relation": "above",
+    "claimed_relation": "to the left of"
+  },
+  {
+    "image_id": "image_0027.jpg",
+    "question": "Do you see exactly 5 circles?",
+    "ground_truth": "no",
+    "question_type": "count",
+    "answer_options": [
+      "yes",
+      "no"
+    ],
+    "present_objects": [
+      {
+        "shape": "circle",
+        "color": "red",
+        "position": "top_left"
+      },
+      {
+        "shape": "circle",
+        "color": "red",
+        "position": "top_right"
+      },
+      {
+        "shape": "square",
+        "color": "blue",
+        "position": "center"
+      }
+    ],
+    "target_object": "circle",
+    "true_count": 2,
+    "claimed_count": 5
+  },
+  {
+    "image_id": "image_0028.jpg",
+    "question": "Do you see a triangle in the picture?",
+    "ground_truth": "no",
+    "question_type": "object_absent",
+    "answer_options": [
+      "yes",
+      "no"
+    ],
+    "present_objects": [
+      {
+        "shape": "square",
+        "color": "purple",
+        "position": "left"
+      },
+      {
+        "shape": "circle",
+        "color": "purple",
+        "position": "right"
+      }
+    ],
+    "absent_object": "triangle"
+  },
+  {
+    "image_id": "image_0029.jpg",
+    "question": "Is the circle blue in color?",
+    "ground_truth": "no",
+    "question_type": "attribute",
+    "answer_options": [
+      "yes",
+      "no"
+    ],
+    "present_objects": [
+      {
+        "shape": "circle",
+        "color": "purple",
+        "position": "center"
+      },
+      {
+        "shape": "triangle",
+        "color": "yellow",
+        "position": "bottom_right"
+      }
+    ],
+    "target_object": "circle",
+    "true_color": "purple",
+    "claimed_color": "blue"
+  },
+  {
+    "image_id": "image_0030.jpg",
+    "question": "Is the triangle above the square?",
+    "ground_truth": "no",
+    "question_type": "relation",
+    "answer_options": [
+      "yes",
+      "no"
+    ],
+    "present_objects": [
+      {
+        "shape": "triangle",
+        "color": "yellow",
+        "position": "bottom"
+      },
+      {
+        "shape": "square",
+        "color": "red",
+        "position": "top"
+      }
+    ],
+    "object_1": "triangle",
+    "object_2": "square",
+    "true_relation": "below",
+    "claimed_relation": "above"
+  },
+  {
+    "image_id": "image_0031.jpg",
+    "question": "Are there 4 circles in this image?",
+    "ground_truth": "no",
+    "question_type": "count",
+    "answer_options": [
+      "yes",
+      "no"
+    ],
+    "present_objects": [
+      {
+        "shape": "circle",
+        "color": "red",
+        "position": "top_left"
+      },
+      {
+        "shape": "circle",
+        "color": "red",
+        "position": "top_right"
+      },
+      {
+        "shape": "square",
+        "color": "purple",
+        "position": "center"
+      }
+    ],
+    "target_object": "circle",
+    "true_count": 2,
+    "claimed_count": 4
+  },
+  {
+    "image_id": "image_0032.jpg",
+    "question": "Is there a square in this image?",
+    "ground_truth": "no",
+    "question_type": "object_absent",
+    "answer_options": [
+      "yes",
+      "no"
+    ],
+    "present_objects": [
+      {
+        "shape": "circle",
+        "color": "blue",
+        "position": "left"
+      },
+      {
+        "shape": "triangle",
+        "color": "red",
+        "position": "right"
+      }
+    ],
+    "absent_object": "square"
+  },
+  {
+    "image_id": "image_0033.jpg",
+    "question": "Is the square purple in color?",
+    "ground_truth": "no",
+    "question_type": "attribute",
+    "answer_options": [
+      "yes",
+      "no"
+    ],
+    "present_objects": [
+      {
+        "shape": "square",
+        "color": "red",
+        "position": "center"
+      },
+      {
+        "shape": "circle",
+        "color": "green",
+        "position": "bottom_right"
+      }
+    ],
+    "target_object": "square",
+    "true_color": "red",
+    "claimed_color": "purple"
+  },
+  {
+    "image_id": "image_0034.jpg",
+    "question": "Is the square located below the circle?",
+    "ground_truth": "no",
+    "question_type": "relation",
+    "answer_options": [
+      "yes",
+      "no"
+    ],
+    "present_objects": [
+      {
+        "shape": "square",
+        "color": "purple",
+        "position": "right"
+      },
+      {
+        "shape": "circle",
+        "color": "purple",
+        "position": "left"
+      }
+    ],
+    "object_1": "square",
+    "object_2": "circle",
+    "true_relation": "to the right of",
+    "claimed_relation": "below"
+  },
+  {
+    "image_id": "image_0035.jpg",
+    "question": "Do you see exactly 5 circles?",
+    "ground_truth": "no",
+    "question_type": "count",
+    "answer_options": [
+      "yes",
+      "no"
+    ],
+    "present_objects": [
+      {
+        "shape": "circle",
+        "color": "blue",
+        "position": "top_left"
+      },
+      {
+        "shape": "circle",
+        "color": "blue",
+        "position": "top_right"
+      },
+      {
+        "shape": "circle",
+        "color": "blue",
+        "position": "bottom_left"
+      },
+      {
+        "shape": "square",
+        "color": "red",
+        "position": "center"
+      }
+    ],
+    "target_object": "circle",
+    "true_count": 3,
+    "claimed_count": 5
+  },
+  {
+    "image_id": "image_0036.jpg",
+    "question": "Is a circle present in the image?",
+    "ground_truth": "no",
+    "question_type": "object_absent",
+    "answer_options": [
+      "yes",
+      "no"
+    ],
+    "present_objects": [
+      {
+        "shape": "square",
+        "color": "yellow",
+        "position": "left"
+      },
+      {
+        "shape": "triangle",
+        "color": "yellow",
+        "position": "right"
+      }
+    ],
+    "absent_object": "circle"
+  },
+  {
+    "image_id": "image_0037.jpg",
+    "question": "Is the circle red in color?",
+    "ground_truth": "no",
+    "question_type": "attribute",
+    "answer_options": [
+      "yes",
+      "no"
+    ],
+    "present_objects": [
+      {
+        "shape": "circle",
+        "color": "orange",
+        "position": "center"
+      },
+      {
+        "shape": "square",
+        "color": "yellow",
+        "position": "bottom_right"
+      }
+    ],
+    "target_object": "circle",
+    "true_color": "orange",
+    "claimed_color": "red"
+  },
+  {
+    "image_id": "image_0038.jpg",
+    "question": "Is the square located to the left of the circle?",
+    "ground_truth": "no",
+    "question_type": "relation",
+    "answer_options": [
+      "yes",
+      "no"
+    ],
+    "present_objects": [
+      {
+        "shape": "square",
+        "color": "blue",
+        "position": "right"
+      },
+      {
+        "shape": "circle",
+        "color": "purple",
+        "position": "left"
+      }
+    ],
+    "object_1": "square",
+    "object_2": "circle",
+    "true_relation": "to the right of",
+    "claimed_relation": "to the left of"
+  },
+  {
+    "image_id": "image_0039.jpg",
+    "question": "Are there 2 circles in this image?",
+    "ground_truth": "no",
+    "question_type": "count",
+    "answer_options": [
+      "yes",
+      "no"
+    ],
+    "present_objects": [
+      {
+        "shape": "circle",
+        "color": "green",
+        "position": "top_left"
+      },
+      {
+        "shape": "circle",
+        "color": "green",
+        "position": "top_right"
+      },
+      {
+        "shape": "circle",
+        "color": "green",
+        "position": "bottom_left"
+      },
+      {
+        "shape": "triangle",
+        "color": "blue",
+        "position": "center"
+      }
+    ],
+    "target_object": "circle",
+    "true_count": 3,
+    "claimed_count": 2
+  },
+  {
+    "image_id": "image_0040.jpg",
+    "question": "Is there a triangle in this image?",
+    "ground_truth": "no",
+    "question_type": "object_absent",
+    "answer_options": [
+      "yes",
+      "no"
+    ],
+    "present_objects": [
+      {
+        "shape": "square",
+        "color": "orange",
+        "position": "left"
+      },
+      {
+        "shape": "circle",
+        "color": "purple",
+        "position": "right"
+      }
+    ],
+    "absent_object": "triangle"
+  },
+  {
+    "image_id": "image_0041.jpg",
+    "question": "Does the circle appear orange?",
+    "ground_truth": "no",
+    "question_type": "attribute",
+    "answer_options": [
+      "yes",
+      "no"
+    ],
+    "present_objects": [
+      {
+        "shape": "circle",
+        "color": "blue",
+        "position": "center"
+      },
+      {
+        "shape": "triangle",
+        "color": "yellow",
+        "position": "bottom_right"
+      }
+    ],
+    "target_object": "circle",
+    "true_color": "blue",
+    "claimed_color": "orange"
+  },
+  {
+    "image_id": "image_0042.jpg",
+    "question": "Is the circle located to the right of the square?",
+    "ground_truth": "no",
+    "question_type": "relation",
+    "answer_options": [
+      "yes",
+      "no"
+    ],
+    "present_objects": [
+      {
+        "shape": "circle",
+        "color": "yellow",
+        "position": "left"
+      },
+      {
+        "shape": "square",
+        "color": "red",
+        "position": "right"
+      }
+    ],
+    "object_1": "circle",
+    "object_2": "square",
+    "true_relation": "to the left of",
+    "claimed_relation": "to the right of"
+  },
+  {
+    "image_id": "image_0043.jpg",
+    "question": "Are there 4 squares in this image?",
+    "ground_truth": "no",
+    "question_type": "count",
+    "answer_options": [
+      "yes",
+      "no"
+    ],
+    "present_objects": [
+      {
+        "shape": "square",
+        "color": "yellow",
+        "position": "top_left"
+      },
+      {
+        "shape": "square",
+        "color": "yellow",
+        "position": "top_right"
+      },
+      {
+        "shape": "square",
+        "color": "yellow",
+        "position": "bottom_left"
+      },
+      {
+        "shape": "triangle",
+        "color": "blue",
+        "position": "center"
+      }
+    ],
+    "target_object": "square",
+    "true_count": 3,
+    "claimed_count": 4
+  },
+  {
+    "image_id": "image_0044.jpg",
+    "question": "Is a triangle present in the image?",
+    "ground_truth": "no",
+    "question_type": "object_absent",
+    "answer_options": [
+      "yes",
+      "no"
+    ],
+    "present_objects": [
+      {
+        "shape": "square",
+        "color": "purple",
+        "position": "left"
+      },
+      {
+        "shape": "circle",
+        "color": "orange",
+        "position": "right"
+      }
+    ],
+    "absent_object": "triangle"
+  },
+  {
+    "image_id": "image_0045.jpg",
+    "question": "Is the circle green in color?",
+    "ground_truth": "no",
+    "question_type": "attribute",
+    "answer_options": [
+      "yes",
+      "no"
+    ],
+    "present_objects": [
+      {
+        "shape": "circle",
+        "color": "orange",
+        "position": "center"
+      },
+      {
+        "shape": "square",
+        "color": "red",
+        "position": "bottom_right"
+      }
+    ],
+    "target_object": "circle",
+    "true_color": "orange",
+    "claimed_color": "green"
+  },
+  {
+    "image_id": "image_0046.jpg",
+    "question": "Is the square below the circle?",
+    "ground_truth": "no",
+    "question_type": "relation",
+    "answer_options": [
+      "yes",
+      "no"
+    ],
+    "present_objects": [
+      {
+        "shape": "square",
+        "color": "red",
+        "position": "left"
+      },
+      {
+        "shape": "circle",
+        "color": "blue",
+        "position": "right"
+      }
+    ],
+    "object_1": "square",
+    "object_2": "circle",
+    "true_relation": "to the left of",
+    "claimed_relation": "below"
+  },
+  {
+    "image_id": "image_0047.jpg",
+    "question": "Are there 3 triangles in this image?",
+    "ground_truth": "no",
+    "question_type": "count",
+    "answer_options": [
+      "yes",
+      "no"
+    ],
+    "present_objects": [
+      {
+        "shape": "triangle",
+        "color": "yellow",
+        "position": "top_left"
+      },
+      {
+        "shape": "triangle",
+        "color": "yellow",
+        "position": "top_right"
+      },
+      {
+        "shape": "circle",
+        "color": "purple",
+        "position": "center"
+      }
+    ],
+    "target_object": "triangle",
+    "true_count": 2,
+    "claimed_count": 3
+  },
+  {
+    "image_id": "image_0048.jpg",
+    "question": "Is a square present in the image?",
+    "ground_truth": "no",
+    "question_type": "object_absent",
+    "answer_options": [
+      "yes",
+      "no"
+    ],
+    "present_objects": [
+      {
+        "shape": "triangle",
+        "color": "yellow",
+        "position": "left"
+      },
+      {
+        "shape": "circle",
+        "color": "orange",
+        "position": "right"
+      }
+    ],
+    "absent_object": "square"
+  },
+  {
+    "image_id": "image_0049.jpg",
+    "question": "Is the triangle green in color?",
+    "ground_truth": "no",
+    "question_type": "attribute",
+    "answer_options": [
+      "yes",
+      "no"
+    ],
+    "present_objects": [
+      {
+        "shape": "triangle",
+        "color": "purple",
+        "position": "center"
+      },
+      {
+        "shape": "square",
+        "color": "blue",
+        "position": "bottom_right"
+      }
+    ],
+    "target_object": "triangle",
+    "true_color": "purple",
+    "claimed_color": "green"
+  },
+  {
+    "image_id": "image_0050.jpg",
+    "question": "Does the triangle appear above the square?",
+    "ground_truth": "no",
+    "question_type": "relation",
+    "answer_options": [
+      "yes",
+      "no"
+    ],
+    "present_objects": [
+      {
+        "shape": "triangle",
+        "color": "yellow",
+        "position": "right"
+      },
+      {
+        "shape": "square",
+        "color": "blue",
+        "position": "left"
+      }
+    ],
+    "object_1": "triangle",
+    "object_2": "square",
+    "true_relation": "to the right of",
+    "claimed_relation": "above"
+  },
+  {
+    "image_id": "image_0051.jpg",
+    "question": "Is the number of triangles equal to 5?",
+    "ground_truth": "no",
+    "question_type": "count",
+    "answer_options": [
+      "yes",
+      "no"
+    ],
+    "present_objects": [
+      {
+        "shape": "triangle",
+        "color": "green",
+        "position": "top_left"
+      },
+      {
+        "shape": "triangle",
+        "color": "green",
+        "position": "top_right"
+      },
+      {
+        "shape": "triangle",
+        "color": "green",
+        "position": "bottom_left"
+      },
+      {
+        "shape": "circle",
+        "color": "red",
+        "position": "center"
+      }
+    ],
+    "target_object": "triangle",
+    "true_count": 3,
+    "claimed_count": 5
+  },
+  {
+    "image_id": "image_0052.jpg",
+    "question": "Is a square present in the image?",
+    "ground_truth": "no",
+    "question_type": "object_absent",
+    "answer_options": [
+      "yes",
+      "no"
+    ],
+    "present_objects": [
+      {
+        "shape": "triangle",
+        "color": "purple",
+        "position": "left"
+      },
+      {
+        "shape": "circle",
+        "color": "blue",
+        "position": "right"
+      }
+    ],
+    "absent_object": "square"
+  },
+  {
+    "image_id": "image_0053.jpg",
+    "question": "Does the square appear green?",
+    "ground_truth": "no",
+    "question_type": "attribute",
+    "answer_options": [
+      "yes",
+      "no"
+    ],
+    "present_objects": [
+      {
+        "shape": "square",
+        "color": "blue",
+        "position": "center"
+      },
+      {
+        "shape": "circle",
+        "color": "blue",
+        "position": "bottom_right"
+      }
+    ],
+    "target_object": "square",
+    "true_color": "blue",
+    "claimed_color": "green"
+  },
+  {
+    "image_id": "image_0054.jpg",
+    "question": "Does the square appear above the circle?",
+    "ground_truth": "no",
+    "question_type": "relation",
+    "answer_options": [
+      "yes",
+      "no"
+    ],
+    "present_objects": [
+      {
+        "shape": "square",
+        "color": "orange",
+        "position": "bottom"
+      },
+      {
+        "shape": "circle",
+        "color": "green",
+        "position": "top"
+      }
+    ],
+    "object_1": "square",
+    "object_2": "circle",
+    "true_relation": "below",
+    "claimed_relation": "above"
+  },
+  {
+    "image_id": "image_0055.jpg",
+    "question": "Are there 1 triangles in this image?",
+    "ground_truth": "no",
+    "question_type": "count",
+    "answer_options": [
+      "yes",
+      "no"
+    ],
+    "present_objects": [
+      {
+        "shape": "triangle",
+        "color": "orange",
+        "position": "top_left"
+      },
+      {
+        "shape": "triangle",
+        "color": "orange",
+        "position": "top_right"
+      },
+      {
+        "shape": "triangle",
+        "color": "orange",
+        "position": "bottom_left"
+      },
+      {
+        "shape": "triangle",
+        "color": "orange",
+        "position": "bottom_right"
+      },
+      {
+        "shape": "square",
+        "color": "orange",
+        "position": "center"
+      }
+    ],
+    "target_object": "triangle",
+    "true_count": 4,
+    "claimed_count": 1
+  },
+  {
+    "image_id": "image_0056.jpg",
+    "question": "Is a triangle present in the image?",
+    "ground_truth": "no",
+    "question_type": "object_absent",
+    "answer_options": [
+      "yes",
+      "no"
+    ],
+    "present_objects": [
+      {
+        "shape": "circle",
+        "color": "red",
+        "position": "left"
+      },
+      {
+        "shape": "square",
+        "color": "orange",
+        "position": "right"
+      }
+    ],
+    "absent_object": "triangle"
+  },
+  {
+    "image_id": "image_0057.jpg",
+    "question": "Does the circle appear orange?",
+    "ground_truth": "no",
+    "question_type": "attribute",
+    "answer_options": [
+      "yes",
+      "no"
+    ],
+    "present_objects": [
+      {
+        "shape": "circle",
+        "color": "green",
+        "position": "center"
+      },
+      {
+        "shape": "square",
+        "color": "orange",
+        "position": "bottom_right"
+      }
+    ],
+    "target_object": "circle",
+    "true_color": "green",
+    "claimed_color": "orange"
+  },
+  {
+    "image_id": "image_0058.jpg",
+    "question": "Does the circle appear to the right of the square?",
+    "ground_truth": "no",
+    "question_type": "relation",
+    "answer_options": [
+      "yes",
+      "no"
+    ],
+    "present_objects": [
+      {
+        "shape": "circle",
+        "color": "red",
+        "position": "bottom"
+      },
+      {
+        "shape": "square",
+        "color": "red",
+        "position": "top"
+      }
+    ],
+    "object_1": "circle",
+    "object_2": "square",
+    "true_relation": "below",
+    "claimed_relation": "to the right of"
+  },
+  {
+    "image_id": "image_0059.jpg",
+    "question": "Do you see exactly 1 squares?",
+    "ground_truth": "no",
+    "question_type": "count",
+    "answer_options": [
+      "yes",
+      "no"
+    ],
+    "present_objects": [
+      {
+        "shape": "square",
+        "color": "red",
+        "position": "top_left"
+      },
+      {
+        "shape": "square",
+        "color": "red",
+        "position": "top_right"
+      },
+      {
+        "shape": "square",
+        "color": "red",
+        "position": "bottom_left"
+      },
+      {
+        "shape": "triangle",
+        "color": "blue",
+        "position": "center"
+      }
+    ],
+    "target_object": "square",
+    "true_count": 3,
+    "claimed_count": 1
+  },
+  {
+    "image_id": "image_0060.jpg",
+    "question": "Do you see a triangle in the picture?",
+    "ground_truth": "no",
+    "question_type": "object_absent",
+    "answer_options": [
+      "yes",
+      "no"
+    ],
+    "present_objects": [
+      {
+        "shape": "square",
+        "color": "purple",
+        "position": "left"
+      },
+      {
+        "shape": "circle",
+        "color": "orange",
+        "position": "right"
+      }
+    ],
+    "absent_object": "triangle"
+  },
+  {
+    "image_id": "image_0061.jpg",
+    "question": "Is the triangle orange?",
+    "ground_truth": "no",
+    "question_type": "attribute",
+    "answer_options": [
+      "yes",
+      "no"
+    ],
+    "present_objects": [
+      {
+        "shape": "triangle",
+        "color": "red",
+        "position": "center"
+      },
+      {
+        "shape": "circle",
+        "color": "orange",
+        "position": "bottom_right"
+      }
+    ],
+    "target_object": "triangle",
+    "true_color": "red",
+    "claimed_color": "orange"
+  },
+  {
+    "image_id": "image_0062.jpg",
+    "question": "Is the triangle located below the circle?",
+    "ground_truth": "no",
+    "question_type": "relation",
+    "answer_options": [
+      "yes",
+      "no"
+    ],
+    "present_objects": [
+      {
+        "shape": "triangle",
+        "color": "purple",
+        "position": "top"
+      },
+      {
+        "shape": "circle",
+        "color": "blue",
+        "position": "bottom"
+      }
+    ],
+    "object_1": "triangle",
+    "object_2": "circle",
+    "true_relation": "above",
+    "claimed_relation": "below"
+  },
+  {
+    "image_id": "image_0063.jpg",
+    "question": "Are there 4 circles in this image?",
+    "ground_truth": "no",
+    "question_type": "count",
+    "answer_options": [
+      "yes",
+      "no"
+    ],
+    "present_objects": [
+      {
+        "shape": "circle",
+        "color": "green",
+        "position": "top_left"
+      },
+      {
+        "shape": "circle",
+        "color": "green",
+        "position": "top_right"
+      },
+      {
+        "shape": "square",
+        "color": "green",
+        "position": "center"
+      }
+    ],
+    "target_object": "circle",
+    "true_count": 2,
+    "claimed_count": 4
+  },
+  {
+    "image_id": "image_0064.jpg",
+    "question": "Do you see a square in the picture?",
+    "ground_truth": "no",
+    "question_type": "object_absent",
+    "answer_options": [
+      "yes",
+      "no"
+    ],
+    "present_objects": [
+      {
+        "shape": "triangle",
+        "color": "green",
+        "position": "left"
+      },
+      {
+        "shape": "circle",
+        "color": "purple",
+        "position": "right"
+      }
+    ],
+    "absent_object": "square"
+  },
+  {
+    "image_id": "image_0065.jpg",
+    "question": "Is the triangle blue?",
+    "ground_truth": "no",
+    "question_type": "attribute",
+    "answer_options": [
+      "yes",
+      "no"
+    ],
+    "present_objects": [
+      {
+        "shape": "triangle",
+        "color": "orange",
+        "position": "center"
+      },
+      {
+        "shape": "circle",
+        "color": "blue",
+        "position": "bottom_right"
+      }
+    ],
+    "target_object": "triangle",
+    "true_color": "orange",
+    "claimed_color": "blue"
+  },
+  {
+    "image_id": "image_0066.jpg",
+    "question": "Does the square appear below the circle?",
+    "ground_truth": "no",
+    "question_type": "relation",
+    "answer_options": [
+      "yes",
+      "no"
+    ],
+    "present_objects": [
+      {
+        "shape": "square",
+        "color": "green",
+        "position": "right"
+      },
+      {
+        "shape": "circle",
+        "color": "yellow",
+        "position": "left"
+      }
+    ],
+    "object_1": "square",
+    "object_2": "circle",
+    "true_relation": "to the right of",
+    "claimed_relation": "below"
+  },
+  {
+    "image_id": "image_0067.jpg",
+    "question": "Are there 4 triangles in this image?",
+    "ground_truth": "no",
+    "question_type": "count",
+    "answer_options": [
+      "yes",
+      "no"
+    ],
+    "present_objects": [
+      {
+        "shape": "triangle",
+        "color": "blue",
+        "position": "top_left"
+      },
+      {
+        "shape": "triangle",
+        "color": "blue",
+        "position": "top_right"
+      },
+      {
+        "shape": "circle",
+        "color": "yellow",
+        "position": "center"
+      }
+    ],
+    "target_object": "triangle",
+    "true_count": 2,
+    "claimed_count": 4
+  },
+  {
+    "image_id": "image_0068.jpg",
+    "question": "Do you see a triangle in the picture?",
+    "ground_truth": "no",
+    "question_type": "object_absent",
+    "answer_options": [
+      "yes",
+      "no"
+    ],
+    "present_objects": [
+      {
+        "shape": "square",
+        "color": "yellow",
+        "position": "left"
+      },
+      {
+        "shape": "circle",
+        "color": "green",
+        "position": "right"
+      }
+    ],
+    "absent_object": "triangle"
+  },
+  {
+    "image_id": "image_0069.jpg",
+    "question": "Does the circle appear red?",
+    "ground_truth": "no",
+    "question_type": "attribute",
+    "answer_options": [
+      "yes",
+      "no"
+    ],
+    "present_objects": [
+      {
+        "shape": "circle",
+        "color": "blue",
+        "position": "center"
+      },
+      {
+        "shape": "square",
+        "color": "yellow",
+        "position": "bottom_right"
+      }
+    ],
+    "target_object": "circle",
+    "true_color": "blue",
+    "claimed_color": "red"
+  }
+]

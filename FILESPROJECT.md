@@ -43,12 +43,6 @@ Cronograma y timeline del proyecto. Contiene:
 - Fechas de ejecución
 - Fases de desarrollo
 
-### `run.py`
-Script interactivo con menú para ejecutar tareas del proyecto. Proporciona:
-- Interfaz de línea de comandos para el usuario
-- Menú interactivo con opciones principales
-- Ejecución de comandos comunes del proyecto
-
 ---
 
 ## 🐍 Scripts Principal (`src/`)
@@ -211,7 +205,7 @@ Carpeta adicional para scripts personalizados:
 
 1. **Setup**: Seguir [QUICKSTART.md](QUICKSTART.md)
 2. **Descargar modelos**: `python src/download_models.py --download --model all`
-3. **Ejecutar pipeline**: `python src/run_pipeline.py` o usar `python run.py`
+3. **Ejecutar pipeline**: `python src/run_pipeline.py`
 4. **Analizar**: Resultados en `reports/` y `results/`
 
 ---

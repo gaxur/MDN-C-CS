@@ -1,8 +1,8 @@
 #!/bin/bash
 # Setup script for the UNIMORE HPC cluster.
-# Run this once after copying/cloning the project on the cluster.
+# Run this ONCE after copying/cloning the project on the cluster.
 
-set -euo pipefail
+set -euo pipefail # Exit on error, treat unset variables as errors, and fail on pipeline errors
 
 echo "========================================"
 echo "  SETUP CVCS 2026 - Cluster HPC UNIMORE"
@@ -62,6 +62,6 @@ echo "  SETUP COMPLETE"
 echo "========================================"
 echo ""
 echo "Next steps:"
-echo "  1. Copy your code to the cluster: scp -r your_code/* <user>@ailb-login-02.ing.unimore.it:${PROJECT_DIR}/"
+echo "  1. Copy your code to the cluster using scp (I have used GitHub Actions to automate this, but you can also do it manually)"
 echo "  2. Download checkpoints: sbatch slurm/download_models.sh"
 echo "  3. Run evaluation: sbatch slurm/evaluation.sh"
