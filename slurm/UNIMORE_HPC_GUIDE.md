@@ -1,4 +1,4 @@
-# UNIMORE HPC Cluster Guide - MDN-C-CS
+# UNIMORE HPC Cluster Guide
 
 Complete guide for executing the VLM hallucination evaluation project on **AlmageLab-HPC**.
 
@@ -80,8 +80,11 @@ Generates the benchmark, evaluates the selected model(s), and runs the analysis 
 # Default: all models, 20 samples, baseline mode
 sbatch slurm/evaluation.sh
 
-# Monitor progress
+# Shows the job_id for monitoring
 squeue --me
+
+# Monitor progress
+tail -f /homes/<user>/cvcs2026/evaluation_<job_id>.out
 
 # View results
 cat /homes/<user>/cvcs2026/MDN-C-CS/results/llava15/metrics.json
@@ -119,45 +122,12 @@ sbatch --export=ALL,NUM_SAMPLES=1000,DTYPE=fp16 slurm/evaluation.sh
 
 # Online mode (downloads models if missing)
 sbatch --export=ALL,OFFLINE=0 slurm/evaluation.sh
-```
-
-### Mitigation Study - Prompt Engineering Evaluation
-
-Compare **baseline vs. strict prompting strategies** to measure hallucination reduction:
-
-```bash
-# Run mitigation study for all models
-sbatch --export=ALL,MITIGATION_STUDY=1,NUM_SAMPLES=100,MODEL=all slurm/evaluation.sh
 
 # Mitigation study for specific model only
 sbatch --export=ALL,MITIGATION_STUDY=1,NUM_SAMPLES=100,MODEL=llava15 slurm/evaluation.sh
 ```
 
-**What this does:**
-
-When `MITIGATION_STUDY=1`, the evaluation script runs **two separate evaluations** for each model:
-
-1. **Baseline Mode** (suffix: `_baseline`)
-   - Prompt: "Question? Answer only yes or no."
-   - Measures baseline hallucination rates
-   - Results: `results/[model]_baseline/`
-   - Reports: `reports/[model]_baseline/`
-
-2. **Strict Mode** (suffix: `_strict`)
-   - Prompt: "Question? Answer only yes or no. Verify the visual evidence carefully. If the requested object, attribute, relation, or count is not clearly visible, answer no. Do not infer likely objects from context."
-   - Measures hallucination reduction with enhanced prompt
-   - Results: `results/[model]_strict/`
-   - Reports: `reports/[model]_strict/`
-
-**Output Comparison:**
-
-After the mitigation study completes, you can compare metrics:
-
-```bash
-# Compare baseline vs strict for LLaVA
-jq '.metrics | {baseline_accuracy, strict_accuracy, hallucination_baseline, hallucination_strict}' results/llava15_baseline/metrics.json
-jq '.metrics | {baseline_accuracy, strict_accuracy, hallucination_baseline, hallucination_strict}' results/llava15_strict/metrics.json
-```
+**Note:** When `MITIGATION_STUDY=1`, the evaluation script runs **two separate evaluations** for each model.
 
 ### `jupyter_gpu.sh` - JupyterLab with GPU
 
@@ -165,6 +135,9 @@ Launches JupyterLab on a GPU node for interactive exploration and testing:
 
 ```bash
 sbatch slurm/jupyter_gpu.sh
+
+# Shows the job_id for monitoring
+squeue --me
 
 # Read the log to get the node and token
 tail -f /homes/<user>/cvcs2026/jupyter_<job_id>.out
@@ -190,8 +163,8 @@ nvidia-smi
 # Check disk space
 df -h
 
-# Watch evaluation logs in real-time
-tail -f /homes/<user>/cvcs2026/evaluation_<job_id>.out
+# Watch logs in real-time
+tail -f /homes/<user>/cvcs2026/<name>_<job_id>.out
 ```
 
 ## Retrieving Results
@@ -207,26 +180,4 @@ scp -r <user>@ailb-login-02.ing.unimore.it:/homes/<user>/cvcs2026/MDN-C-CS/repor
 
 # Download specific model results
 scp -r <user>@ailb-login-02.ing.unimore.it:/homes/<user>/cvcs2026/MDN-C-CS/results/llava15 ./
-```
-
-## Output Structure
-
-Each evaluation generates:
-
-```
-results/
-├── llava15/               # Model results
-│   ├── results.json       # All evaluation responses and predictions
-│   ├── metrics.json       # Accuracy, hallucination rates, breakdown by condition
-│   └── summary.json       # High-level summary
-└── qwen3/
-    ├── results.json
-    ├── metrics.json
-    └── summary.json
-
-reports/
-├── llava15/               # Generated analysis and plots
-│   └── (plots, figures)
-└── qwen3/
-    └── (plots, figures)
 ```

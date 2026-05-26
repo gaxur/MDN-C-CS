@@ -2,9 +2,11 @@
 
 This project evaluates hallucination in Vision-Language Models (VLMs): cases where a model confidently describes visual content that is not actually supported by the image.
 
+Developed as part of the Computer Vision and Cognitive Systems course, within the Master's degree in Artificial Intelligence at the University of Modena and Reggio Emilia.
+
 ## Motivation
 
-What if an AI model confidently told you that there is a dog in an image, but there is no dog? This failure mode, known as hallucination, is one of the most concerning limitations of modern multimodal AI systems. Understanding it matters for safety-critical domains such as medical imaging, autonomous driving, media verification, and scientific data analysis.
+What if an AI model confidently told you that there is a figure in an image, but there is no figure? This failure mode, known as hallucination, is one of the most concerning limitations of modern multimodal AI systems. Understanding it matters for safety-critical domains such as medical imaging, autonomous driving, media verification, and scientific data analysis.
 
 ## Project Goals
 
@@ -38,7 +40,7 @@ What if an AI model confidently told you that there is a dog in an image, but th
 
 ```text
 MDN-C-CS/
-├── notebook/          # Interactive notebook
+├── notebook/           # Interactive notebook
 ├── src/                # Python source code
 ├── data/               # Generated benchmark data and checkpoints
 │   └── checkpoints/    # Downloaded model checkpoints
@@ -52,14 +54,6 @@ MDN-C-CS/
 ## Installation & Quick Start
 
 For local execution, see [QUICKSTART.md](QUICKSTART.md).
-
-For cluster execution (UNIMORE HPC), see [slurm/UNIMORE_HPC_GUIDE.md](slurm/UNIMORE_HPC_GUIDE.md).
-
-## Mitigation Strategy
-
-The project implements a **prompt-engineering mitigation strategy** that compares:
-- **Baseline**: Simple yes/no prompt
-- **Strict**: Enhanced prompt requesting careful visual verification
 
 ## HPC Cluster Usage
 

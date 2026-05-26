@@ -1,12 +1,13 @@
-# Quick Start - MDN-C-CS
+# Quick Start - Local Execution
 
 > **Running on UNIMORE HPC Cluster?** See [slurm/UNIMORE_HPC_GUIDE.md](slurm/UNIMORE_HPC_GUIDE.md) instead.
 
-This guide covers **local execution** (development, testing, small-scale runs).
+This guide covers only **local execution** (development, testing, small-scale runs).
 
 ## Step 1: Prepare the Environment
 
 ```bash
+git clone https://github.com/gaxur/MDN-C-CS
 cd ~/Escritorio/MDN-C-CS
 
 python3 -m venv venv
@@ -60,7 +61,7 @@ python src/analyze_results.py --results results/qwen3/results.json --metrics res
 python src/run_pipeline.py --full --offline
 ```
 
-This runs all steps: generate benchmark → evaluate models → analyze results.
+This runs all steps, using the offline mode: generate benchmark → evaluate models → analyze results.
 
 ## Prompt-Engineering Mitigation Study
 
@@ -85,7 +86,7 @@ python src/run_pipeline.py --model qwen3 --mitigation-study --offline
 - Results saved to `results/[model]_baseline/` and `results/[model]_strict/`
 - Reports comparing both strategies in `reports/[model]_baseline/` and `reports/[model]_strict/`
 
-**Note:** This doubles the evaluation time since each model is evaluated with both prompting strategies.
+**Note:** This doubles the evaluation time since each model is evaluated with both prompting strategies, due to the evaluation process being run twice.
 
 ## Interactive Testing with Jupyter Notebook
 
@@ -106,11 +107,6 @@ jupyter lab
 - Visual exploration of benchmark data
 - Comparison of model responses
 - Quick iterations without full pipeline runs
-
-**Typical workflow:**
-1. Download checkpoints: `python src/download_models.py --download --model all`
-2. Generate benchmark: `python src/generate_benchmark.py --num-samples 100`
-3. Open notebook and interactively test models
 
 Use the notebook for:
 - **Debugging:** Test single images and see responses in real-time
@@ -135,6 +131,5 @@ Use the notebook for:
 
 ## Notes
 
-- **GPU Required:** 7B/8B models are impractical on CPU. Use `--allow-cpu` only for tiny smoke tests
-- **Offline Mode:** Use `--offline` to load checkpoints from local `data/checkpoints/`
-- **For Cluster:** See [slurm/UNIMORE_HPC_GUIDE.md](slurm/UNIMORE_HPC_GUIDE.md)
+- **GPU Required:** 7B/8B models are impractical on CPU. Use `--allow-cpu` or create `.ipynb` files only for tiny smoke tests
+- **Offline Mode:** Use `--offline` to load checkpoints from local `data/checkpoints/` instead of downloading from Hugging Face Hub
