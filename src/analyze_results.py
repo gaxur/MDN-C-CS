@@ -32,10 +32,10 @@ def load_analysis_dependencies() -> None:
         return
 
     try:
-        import matplotlib.pyplot as pyplot_module
-        import numpy as numpy_module
-        import pandas as pandas_module
-        import seaborn as seaborn_module
+        import matplotlib.pyplot as pyplot_module # Creating and saving PNG plots 
+        import pandas as pandas_module # Data manipulation and CSV export
+        import numpy as numpy_module # Numerical operations for plotting
+        import seaborn as seaborn_module # Enhanced plotting aesthetics and color palettes
     except ImportError as exc:
         raise RuntimeError(
             f"Could not import analysis dependencies: {exc}\n"

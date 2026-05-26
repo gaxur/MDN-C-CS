@@ -1,0 +1,35 @@
+============================================================
+VLM HALLUCINATION EVALUATION REPORT
+============================================================
+
+Total questions evaluated: 100
+Correct answers: 53
+Overall accuracy: 53.00%
+Hallucination rate (yes predictions on negative probes): 47.00%
+POPE-style false-positive rate: 47.00%
+Unknown answer rate: 0.00%
+
+Metrics by question type:
+----------------------------------------
+  attribute:
+    Total: 25
+    Correct: 17
+    Accuracy: 68.00%
+
+  count:
+    Total: 25
+    Correct: 14
+    Accuracy: 56.00%
+
+  object_absent:
+    Total: 25
+    Correct: 19
+    Accuracy: 76.00%
+
+  relation:
+    Total: 25
+    Correct: 3
+    Accuracy: 12.00%
+
+Condition-level CSV files are saved separately when metadata is available.
+============================================================

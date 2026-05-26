@@ -233,24 +233,62 @@ We evaluate prompt engineering as a low-cost mitigation approach by comparing:
 & \multicolumn{2}{c|}{LLaVA-v1.5} & \multicolumn{2}{c}{Qwen3-VL} \\
 \textbf{Metric} & Base & Strict & Base & Strict \\
 \midrule
-Accuracy & 53\% & 61\% & 92\% & 95\% \\
-Hallucination & 47\% & 39\% & 8\% & 5\% \\
-Spatial & 12\% & 20\% & 80\% & 88\% \\
+Accuracy & 53\% & 63\% & 92\% & 91\% \\
+Hallucination & 47\% & 37\% & 8\% & 9\% \\
+Spatial & 12\% & 24\% & 80\% & 76\% \\
 \bottomrule
 \end{tabular}
 \end{table}
 
-Strict prompting reduces hallucinations consistently: LLaVA-v1.5 gains +8 pp, Qwen3-VL achieves higher relative reduction (-37.5\%). Spatial reasoning shows the largest improvement (+8 pp on both models), but remains weak in LLaVA-v1.5 even with mitigation.
+Strict prompting reduces hallucinations for LLaVA-v1.5 (+10 pp accuracy, -10 pp hallucination), with the largest improvements in spatial reasoning (+12 pp) and counting (+32 pp). Qwen3-VL shows different behavior: accuracy slightly decreases (-1 pp), hallucination slightly increases (+1 pp), and spatial reasoning decreases (-4 pp). This suggests that for already-robust models, strict prompting introduces unnecessary conservatism, while for weak models, it provides substantial benefits.
 
-\textbf{Key Insight}: Prompt engineering is a zero-cost improvement but insufficient alone for safety-critical applications. Architectural improvements (Qwen3-VL vs LLaVA-v1.5) provide substantially larger benefits than prompting strategies.
+\textbf{Key Insight}: Prompt engineering provides substantial improvements for weaker models (LLaVA-v1.5: +10 pp accuracy) but can introduce unnecessary conservatism in stronger models (Qwen3-VL: -1 pp). Architectural improvements remain the most effective hallucination mitigation strategy.
+
+\subsubsection{Category-Specific Improvements}
+
+\begin{table}[h]
+\centering
+\caption{LLaVA-v1.5: Category Performance with Mitigation}
+\begin{tabular}{lrrr}
+\toprule
+\textbf{Category} & \textbf{Baseline} & \textbf{Strict} & \textbf{Improvement} \\
+\midrule
+Absent Objects & 76\% & 76\% & 0 pp \\
+Attributes & 68\% & 64\% & -4 pp \\
+Spatial Relations & 12\% & 24\% & +12 pp \\
+Counting & 56\% & 88\% & +32 pp \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+For LLaVA-v1.5, counting shows the largest improvement (+32 pp), suggesting the model benefits significantly from explicit verification instructions when quantifying objects. Spatial reasoning also improves substantially (+12 pp), though it remains weak. Attributes show minor degradation, indicating strict prompting may be overly conservative for attribute verification.
+
+\begin{table}[h]
+\centering
+\caption{Qwen3-VL: Category Performance with Mitigation}
+\begin{tabular}{lrrr}
+\toprule
+\textbf{Category} & \textbf{Baseline} & \textbf{Strict} & \textbf{Change} \\
+\midrule
+Absent Objects & 100\% & 100\% & 0 pp \\
+Attributes & 96\% & 96\% & 0 pp \\
+Spatial Relations & 80\% & 76\% & -4 pp \\
+Counting & 92\% & 92\% & 0 pp \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+For Qwen3-VL, strict prompting provides no improvements and causes minor regression in spatial reasoning (-4 pp). This indicates that the model already incorporates evidence-based reasoning implicitly, and explicit instructions actually introduce unnecessary constraints.
 
 \section{Conclusion}
 
-Our systematic evaluation demonstrates that while Vision-Language Models have advanced substantially, hallucination remains a critical limitation for safety-critical deployment. Qwen3-VL (92\% accuracy) substantially outperforms LLaVA-v1.5 (53\% accuracy), with particularly stark differences in spatial reasoning (80\% vs 12\%).
+Our systematic evaluation with real-world execution demonstrates that Vision-Language Models exhibit substantial performance differences in hallucination susceptibility. LLaVA-v1.5 achieves 53\% accuracy with a 47\% hallucination rate, while Qwen3-VL achieves 92\% accuracy with only 8\% hallucination—a 39-percentage-point gap reflecting fundamental architectural improvements.
 
-Key findings: (1) Architectural improvements provide the largest hallucination reductions, (2) Spatial reasoning remains the weakest category across all models, (3) Strict prompting provides modest but consistent improvements without retraining, and (4) No single mitigation strategy suffices---combinations of model selection, prompt engineering, and human verification are necessary.
+Critically, spatial reasoning remains weak across both models, with LLaVA-v1.5 failing catastrophically (12\% accuracy) and even Qwen3-VL achieving only 80\%. This indicates that geometric reasoning remains a fundamental challenge for current \VLMs.
 
-For practitioners deploying Vision-Language Models, careful model selection is essential. We recommend Qwen3-VL for spatial reasoning tasks, strict prompting to reduce false-positives, and human verification for safety-critical decisions.
+Prompt engineering provides meaningful improvements for weaker models: LLaVA-v1.5's strict prompting improves accuracy by 10 percentage points, with counting accuracy improving dramatically from 56\% to 88\%. However, strict prompting does not improve stronger models and may introduce unnecessary conservatism (Qwen3-VL: 92\% → 91\%).
+
+For practitioners: (1) Architectural improvements (Qwen3-VL over LLaVA-v1.5) provide the largest hallucination reductions, (2) Prompt engineering provides meaningful but limited improvements for weaker models, and (3) No single mitigation strategy suffices for safety-critical spatial reasoning tasks—human verification remains essential.
 
 \pagebreak
 
