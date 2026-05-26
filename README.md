@@ -61,20 +61,6 @@ The project implements a **prompt-engineering mitigation strategy** that compare
 - **Baseline**: Simple yes/no prompt
 - **Strict**: Enhanced prompt requesting careful visual verification
 
-Run the full mitigation study:
-
-```bash
-python src/run_pipeline.py --full --offline --mitigation-study
-```
-
-This creates separate result folders (`results/[model]_baseline/` and `results/[model]_strict/`) for comparison.
-
-**Cluster execution:**
-
-```bash
-sbatch --export=ALL,MITIGATION_STUDY=1 slurm/evaluation.sh
-```
-
 ## HPC Cluster Usage
 
 See [slurm/UNIMORE_HPC_GUIDE.md](slurm/UNIMORE_HPC_GUIDE.md) for the recommended UNIMORE HPC workflow.
