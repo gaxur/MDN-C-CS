@@ -9,7 +9,7 @@
 #SBATCH --account=cvcs2026
 #SBATCH --constraint=gpu_P100_16G
 
-set -euo pipefail # Exit on error, treat unset variables as errors, and fail on pipeline errors
+set -euo pipefail # Exit on errors, treat unset variables as errors, and fail on pipeline errors
 
 # Launch JupyterLab with GPU access on the UNIMORE HPC cluster.
 
