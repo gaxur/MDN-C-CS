@@ -30,22 +30,11 @@ ENV/
 env/
 
 # Data and large model files
-data/checkpoints/
-data/hf_home/
-data/images/
-data/*.jpg
-data/*.jpeg
-data/*.png
+data/
 
 # Generated results
 results/
-reports/llava/
-reports/qwen/
-reports/**/*.png
-reports/**/*.jpg
-reports/**/*.csv
-reports/*.png
-reports/*.jpg
+reports/
 
 # Jupyter
 .ipynb_checkpoints/

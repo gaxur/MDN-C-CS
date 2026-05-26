@@ -98,7 +98,7 @@ pip install jupyter
 # Start Jupyter Lab
 jupyter lab
 
-# Then open: notebooks/quick_test_vlms.ipynb
+# Then open: notebook/quick_test_vlms.ipynb
 ```
 
 **Features:**
@@ -126,7 +126,7 @@ Use the notebook for:
 | `src/evaluate_vlms.py` | Run model evaluation |
 | `src/analyze_results.py` | Generate metrics and visualizations |
 | `src/run_pipeline.py` | End-to-end pipeline (all steps) |
-| `notebooks/quick_test_vlms.ipynb` | Interactive testing notebook |
+| `notebook/quick_test_vlms.ipynb` | Interactive testing notebook |
 
 ## Output
 

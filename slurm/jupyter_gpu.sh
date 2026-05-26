@@ -1,13 +1,13 @@
 #!/bin/bash
 #SBATCH --job-name=jupyter_vlm
 #SBATCH --partition=all_serial
-#SBATCH --cpus-per-task=4
-#SBATCH --mem=16G
-#SBATCH --gres=gpu:2
-#SBATCH --time=01:30:00
+#SBATCH --cpus-per-task=2
+#SBATCH --mem=8G
+#SBATCH --gres=gpu:1
+#SBATCH --time=01:00:00
 #SBATCH --output=/homes/%u/cvcs2026/jupyter_%j.out
 #SBATCH --account=cvcs2026
-#SBATCH --constraint=gpu_K80
+#SBATCH --constraint=gpu_P100_16G
 
 set -euo pipefail # Exit on error, treat unset variables as errors, and fail on pipeline errors
 

@@ -38,7 +38,7 @@ What if an AI model confidently told you that there is a dog in an image, but th
 
 ```text
 MDN-C-CS/
-├── notebooks/          # Interactive notebooks
+├── notebook/          # Interactive notebook
 ├── src/                # Python source code
 ├── data/               # Generated benchmark data and checkpoints
 │   └── checkpoints/    # Downloaded model checkpoints
