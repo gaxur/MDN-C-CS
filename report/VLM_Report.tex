@@ -17,6 +17,7 @@
 \usepackage{enumitem}
 \usepackage{url}
 \usepackage{xcolor}
+\usepackage{float}
 
 \geometry{left=2.5cm, right=2.5cm, top=2.5cm, bottom=2.5cm}
 \setlength{\parindent}{0pt}
@@ -48,378 +49,52 @@
 \maketitle
 
 \begin{abstract}
-Vision-Language Models (\VLMs) have demonstrated remarkable capabilities in understanding and describing images, yet they remain prone to hallucinations---confident descriptions of visual content not actually present in the image. This report evaluates hallucination patterns across four critical categories: absent objects, incorrect attributes, spatial relations, and counting errors. We employ a synthetic probing benchmark to systematically test two state-of-the-art \VLMs: LLaVA-v1.5 (7B) and Qwen3-VL (8B-Instruct). Results reveal significant differences in hallucination susceptibility: LLaVA-v1.5 exhibits a 47\% false-positive rate with particular vulnerability in spatial reasoning tasks, while Qwen3-VL demonstrates superior robustness with only an 8\% false-positive rate across all categories. Our findings underscore the importance of careful model selection for safety-critical applications and provide a foundation for developing more reliable vision-language systems.
+Vision-Language Models (\VLMs) have demonstrated remarkable capabilities in understanding and describing images, yet they remain prone to hallucinations (confident descriptions of visual content not actually present in the image). This report evaluates hallucination patterns across four critical categories: absent objects, incorrect attributes, spatial relations, and counting errors. I developed a synthetic probing benchmark to systematically test two state-of-the-art \VLMs: LLaVA-v1.5 (7B) and Qwen3-VL (8B-Instruct). Results reveal significant differences in hallucination susceptibility: LLaVA-v1.5 exhibits a 47\% false-positive rate with particular vulnerability in spatial reasoning tasks, while Qwen3-VL demonstrates superior robustness with only an 8\% false-positive rate across all categories. My findings underscore the importance of careful model selection for safety-critical applications and provide a foundation for developing more reliable vision-language systems.
 
-\textbf{Keywords}: Vision-Language Models, Hallucination, Multimodal AI, Model Evaluation, Benchmark Dataset
 \end{abstract}
 
 \section{Introduction}
 
-Recent advances in Vision-Language Models (\VLMs) have enabled machines to describe images with unprecedented fluency and semantic understanding. Models such as GPT-4V, LLaVA, and Qwen-VL have achieved impressive performance on numerous downstream tasks, from visual question answering to image captioning \cite{liu2023improved, li2024qwen}. However, a critical limitation persists: these models frequently hallucinate content that is not present in the input image.
+Recent advances and research in Vision-Language Models (\VLMs) have enabled machines to describe images with fluency and semantic understanding. Nowadays, models such as GPT-4 Vision, LLaVA, and Qwen-VL have achieved impressive performance on numerous downstream tasks, from visual question answering to image captioning \cite{liu2024improved,bai2025qwen3vl}. However, a critical limitation persists: these models frequently hallucinate content that is not present in the input image.
 
-Hallucination in \VLMs refers to the generation of confident descriptions about visual elements, attributes, or relationships that have no basis in the actual image. This phenomenon poses significant risks for real-world deployment:
+Hallucination in VLMs refers to the generation of confident descriptions about visual elements, attributes, or relationships that have no basis in the actual image. This phenomenon causes significant risks for real-world deployment:
 
 \begin{itemize}
-    \item \textbf{Safety-Critical Applications}: In medical imaging analysis, autonomous driving systems, and automated document processing, hallucinated visual content could lead to dangerous or costly errors.
-    \item \textbf{Trustworthiness}: Users and downstream systems may rely on model outputs without verification, assuming accuracy proportional to confidence scores.
-    \item \textbf{Bias Amplification}: Models may hallucinate content based on dataset biases, potentially perpetuating stereotypes or generating misleading information.
+    \item \textbf{Safety-Critical Applications}: In medical imaging analysis, autonomous driving systems, and automated document processing, hallucinated visual content could lead to dangerous or unfixable errors.
+    \item \textbf{Reliability}: Users and downstream systems may rely on model outputs without verification, assuming accuracy proportional to confidence scores.
 \end{itemize}
 
-Understanding hallucination patterns is essential for developing more reliable \VLMs. Previous work has documented hallucination phenomena in large language models and vision-language systems \cite{li2023hallucination, rohrbach2018object}, but systematic comparative evaluation across multiple hallucination types remains limited.
+Understanding hallucination patterns is essential for developing more reliable \VLMs. Previous work has documented hallucination phenomena in large language models and vision-language systems \cite{rohrbach2018object, li2023hallucination}, but systematic comparative evaluation across multiple hallucination types remains limited.
 
-This report presents a comprehensive evaluation of hallucination in two prominent open-source \VLMs using a carefully designed synthetic benchmark. Our contributions are:
+This report presents a comprehensive evaluation of hallucination in two prominent open-source VLMs using a carefully designed synthetic benchmark. My contributions in this project are:
 
 \begin{enumerate}
     \item A systematic evaluation framework targeting four distinct hallucination categories.
     \item Quantitative comparison of LLaVA-v1.5 and Qwen3-VL across hallucination metrics.
-    \item Detailed analysis of which visual conditions and linguistic contexts make hallucinations more likely.
-    \item Evidence-based recommendations for practitioners selecting \VLMs for sensitive applications.
+    \item Detailed analysis of which visual conditions and linguistic contexts make hallucinations more likely.    \item Comprehensive mitigation strategy development and analysis through prompt engineering evaluation.    \item Evidence-based recommendations for practitioners selecting VLMs for sensitive applications.
 \end{enumerate}
 
 \section{Related Work}
 
-Hallucination in large language models \cite{rawte2023survey} manifests as plausible but factually incorrect text generation. In vision-language systems, hallucination compounds this by integrating errors across visual and linguistic modalities.
+Hallucination in large language models manifests as convincing but ultimately inaccurate text generation. In vision-language systems, hallucination compounds this by integrating errors across visual and linguistic modalities.
 
-Li et al. \cite{li2023hallucination} introduced the POPE (Poll-based Object Probing Evaluation) framework for measuring object hallucination rates. Our evaluation extends POPE-style metrics to four hallucination categories: absent objects, attribute errors, spatial relations, and counting.
+Li et al. \cite{li2023hallucination} introduced the POPE (Poll-based Object Probing Evaluation) framework for measuring object hallucination rates. My evaluation extends POPE-style metrics to four hallucination categories: absent objects, attribute errors, spatial relations, and counting. Specifically, I use POPE negative, where the correct answer to all probes is ``no'', making this a negative probing benchmark designed to measure hallucination rates through false-positive detection.
 
-LLaVA-v1.5 \cite{liu2023improved} combines CLIP vision encoders with Vicuna-7B language model, while Qwen3-VL \cite{li2024qwen} represents the latest generation with improved vision-language alignment. Despite architectural advances, hallucination remains a critical limitation for deployment.
+LLaVA-v1.5 \cite{liu2024improved} combines CLIP vision encoders with Vicuna-7B language model, while Qwen3-VL \cite{bai2025qwen3vl} represents the latest generation with improved vision-language alignment. Despite architectural advances, hallucination remains a critical limitation for deployment even today.
 
 \section{Methodology}
 
 \subsection{Benchmark and Models}
 
-We construct a synthetic benchmark of 100 image-question pairs across four hallucination categories: (1) Absent Objects (25), (2) Attribute Errors (25), (3) Spatial Relations (25), (4) Counting (25). We evaluate two open-source models in default configurations without fine-tuning: LLaVA-v1.5 (7B, CLIP + Vicuna) and Qwen3-VL (8B-Instruct, improved vision-language alignment).
+I have constructed a synthetic benchmark of 100 image-question pairs across four hallucination categories: (1) Absent Objects (25), (2) Attribute Errors (25), (3) Spatial Relations (25), (4) Counting (25). I evaluated two open-source models in default configurations without fine-tuning: LLaVA-v1.5 (7B, CLIP + Vicuna) and Qwen3-VL (8B-Instruct, improved vision-language alignment). In addition, I present the effectiveness of a mitigation strategy applied to each model to reduce hallucination rates.
 
 \subsection{Metrics}
 
 Overall Accuracy on trap questions, Hallucination Rate (false-positive rate), Category-specific performance, and Prompt engineering effects (baseline vs. strict prompting).
 
-\section{Results}
+\subsection{Benchmark Examples}
 
-\subsection{Overall Performance}
-
-Our evaluation reveals stark differences in hallucination susceptibility between the two models:
-
-\begin{table}[h]
-\centering
-\caption{Overall Hallucination Metrics Comparison}
-\begin{tabular}{lcc}
-\toprule
-\textbf{Metric} & \textbf{LLaVA-v1.5} & \textbf{Qwen3-VL} \\
-\midrule
-Overall Accuracy & 53\% & 92\% \\
-Hallucination Rate (FPR) & 47\% & 8\% \\
-Total Samples & 100 & 100 \\
-\bottomrule
-\end{tabular}
-\end{table}
-
-This substantial performance gap (47 percentage points in hallucination rate) indicates fundamental differences in how these models process and integrate visual information with question context.
-
-\subsection{Category-Specific Analysis}
-
-\subsubsection{Absent Objects}
-
-\begin{table}[h]
-\centering
-\caption{Absent Object Recognition Performance}
-\begin{tabular}{lcc}
-\toprule
-\textbf{Model} & \textbf{Accuracy} & \textbf{Samples} \\
-\midrule
-LLaVA-v1.5 & 76\% & 25 \\
-Qwen3-VL & 100\% & 25 \\
-\bottomrule
-\end{tabular}
-\end{table}
-
-Both models perform well on this task, with Qwen3-VL achieving perfect accuracy. LLaVA-v1.5's 76\% accuracy suggests occasional false-positive errors when explicitly asked about absent objects. This is the category where LLaVA-v1.5 performs relatively best, achieving nearly three-quarters correct identifications of missing objects.
-
-\subsubsection{Attribute Errors}
-
-\begin{table}[h]
-\centering
-\caption{Attribute Hallucination Analysis}
-\begin{tabular}{lcc}
-\toprule
-\textbf{Model} & \textbf{Accuracy} & \textbf{Samples} \\
-\midrule
-LLaVA-v1.5 & 68\% & 25 \\
-Qwen3-VL & 96\% & 25 \\
-\bottomrule
-\end{tabular}
-\end{table}
-
-Attribute recognition shows moderate robustness in LLaVA-v1.5 (68\%) but near-perfect performance in Qwen3-VL (96\%). This suggests that attribute hallucination---incorrectly describing object colors, materials, or other properties---is a notable weakness in older \VLM architectures.
-
-\subsubsection{Spatial Relations (Critical Weakness)}
-
-\begin{table}[h]
-\centering
-\caption{Spatial Reasoning Performance}
-\begin{tabular}{lcc}
-\toprule
-\textbf{Model} & \textbf{Accuracy} & \textbf{Samples} \\
-\midrule
-LLaVA-v1.5 & 12\% & 25 \\
-Qwen3-VL & 80\% & 25 \\
-\bottomrule
-\end{tabular}
-\end{table}
-
-This result represents LLaVA-v1.5's most critical weakness: spatial reasoning. With only 12\% accuracy on spatial relationship questions, the model hallucinates spatial configurations in 88\% of cases. Qwen3-VL performs substantially better (80\%), though this remains the weakest category for both models, indicating that precise spatial reasoning remains a challenge for current \VLMs.
-
-\subsubsection{Counting}
-
-\begin{table}[h]
-\centering
-\caption{Counting Task Performance}
-\begin{tabular}{lcc}
-\toprule
-\textbf{Model} & \textbf{Accuracy} & \textbf{Samples} \\
-\midrule
-LLaVA-v1.5 & 56\% & 25 \\
-Qwen3-VL & 92\% & 25 \\
-\bottomrule
-\end{tabular}
-\end{table}
-
-LLaVA-v1.5 shows near-random performance on counting tasks (56\%), indicating significant difficulty with numerical quantification of visual content. Qwen3-VL demonstrates much better performance (92\%), suggesting improved numerical reasoning capabilities in newer architectures.
-
-\subsection{Comparative Visualization}
-
-\begin{table}[h]
-\centering
-\caption{Comprehensive Category Breakdown}
-\begin{tabular}{lrrrr}
-\toprule
-\textbf{Category} & \textbf{LLaVA (Acc.)} & \textbf{Qwen (Acc.)} & \textbf{Delta} & \textbf{Gap Analysis} \\
-\midrule
-Absent Objects & 76\% & 100\% & +24 pp & Minor weakness \\
-Attributes & 68\% & 96\% & +28 pp & Moderate weakness \\
-Spatial Relations & 12\% & 80\% & +68 pp & \textcolor{red}{Critical Gap} \\
-Counting & 56\% & 92\% & +36 pp & Significant weakness \\
-\midrule
-\textbf{Overall} & \textbf{53\%} & \textbf{92\%} & \textbf{+39 pp} & \\
-\bottomrule
-\end{tabular}
-\end{table}
-
-\section{Discussion}
-
-\subsection{Key Findings}
-
-Our evaluation reveals that while Vision-Language Models have advanced substantially, hallucination remains a critical limitation. LLaVA-v1.5's catastrophic failure on spatial relations (12\% accuracy) suggests weak spatial grounding. Qwen3-VL demonstrates improved visual-semantic alignment (92\% overall, 80\% spatial), indicating that recent architectural improvements substantially reduce hallucination. This 39-percentage-point gap underscores the importance of model selection for safety-critical applications.
-
-\subsection{Recommendations}
-
-For safety-critical applications, Qwen3-VL is substantially preferable to LLaVA-v1.5 across all hallucination dimensions. However, no single VLM should be trusted alone for spatial reasoning tasks. We recommend: (1) model selection based on task-specific requirements, (2) strict prompting to reduce false-positives, (3) ensemble approaches for critical decisions, and (4) human verification for high-stakes applications.
-
-\section{Mitigation Strategy: Prompt Engineering}
-
-We evaluate prompt engineering as a low-cost mitigation approach by comparing:
-
-\textbf{Baseline}: ``[Question]? Answer only yes or no.''
-
-\textbf{Strict}: ``[Question]? Answer only yes or no. Verify the visual evidence carefully. If the requested object, attribute, relation, or count is not clearly visible, answer no. Do not infer likely objects from context.''
-
-\subsection{Results}
-
-\begin{table}[h]
-\centering
-\caption{Mitigation Study: Baseline vs Strict Prompting}
-\begin{tabular}{lrr|rr}
-\toprule
-& \multicolumn{2}{c|}{LLaVA-v1.5} & \multicolumn{2}{c}{Qwen3-VL} \\
-\textbf{Metric} & Base & Strict & Base & Strict \\
-\midrule
-Accuracy & 53\% & 63\% & 92\% & 91\% \\
-Hallucination & 47\% & 37\% & 8\% & 9\% \\
-Spatial & 12\% & 24\% & 80\% & 76\% \\
-\bottomrule
-\end{tabular}
-\end{table}
-
-Strict prompting reduces hallucinations for LLaVA-v1.5 (+10 pp accuracy, -10 pp hallucination), with the largest improvements in spatial reasoning (+12 pp) and counting (+32 pp). Qwen3-VL shows different behavior: accuracy slightly decreases (-1 pp), hallucination slightly increases (+1 pp), and spatial reasoning decreases (-4 pp). This suggests that for already-robust models, strict prompting introduces unnecessary conservatism, while for weak models, it provides substantial benefits.
-
-\textbf{Key Insight}: Prompt engineering provides substantial improvements for weaker models (LLaVA-v1.5: +10 pp accuracy) but can introduce unnecessary conservatism in stronger models (Qwen3-VL: -1 pp). Architectural improvements remain the most effective hallucination mitigation strategy.
-
-\subsubsection{Category-Specific Improvements}
-
-\begin{table}[h]
-\centering
-\caption{LLaVA-v1.5: Category Performance with Mitigation}
-\begin{tabular}{lrrr}
-\toprule
-\textbf{Category} & \textbf{Baseline} & \textbf{Strict} & \textbf{Improvement} \\
-\midrule
-Absent Objects & 76\% & 76\% & 0 pp \\
-Attributes & 68\% & 64\% & -4 pp \\
-Spatial Relations & 12\% & 24\% & +12 pp \\
-Counting & 56\% & 88\% & +32 pp \\
-\bottomrule
-\end{tabular}
-\end{table}
-
-For LLaVA-v1.5, counting shows the largest improvement (+32 pp), suggesting the model benefits significantly from explicit verification instructions when quantifying objects. Spatial reasoning also improves substantially (+12 pp), though it remains weak. Attributes show minor degradation, indicating strict prompting may be overly conservative for attribute verification.
-
-\begin{table}[h]
-\centering
-\caption{Qwen3-VL: Category Performance with Mitigation}
-\begin{tabular}{lrrr}
-\toprule
-\textbf{Category} & \textbf{Baseline} & \textbf{Strict} & \textbf{Change} \\
-\midrule
-Absent Objects & 100\% & 100\% & 0 pp \\
-Attributes & 96\% & 96\% & 0 pp \\
-Spatial Relations & 80\% & 76\% & -4 pp \\
-Counting & 92\% & 92\% & 0 pp \\
-\bottomrule
-\end{tabular}
-\end{table}
-
-For Qwen3-VL, strict prompting provides no improvements and causes minor regression in spatial reasoning (-4 pp). This indicates that the model already incorporates evidence-based reasoning implicitly, and explicit instructions actually introduce unnecessary constraints.
-
-\section{Conclusion}
-
-Our systematic evaluation with real-world execution demonstrates that Vision-Language Models exhibit substantial performance differences in hallucination susceptibility. LLaVA-v1.5 achieves 53\% accuracy with a 47\% hallucination rate, while Qwen3-VL achieves 92\% accuracy with only 8\% hallucination—a 39-percentage-point gap reflecting fundamental architectural improvements.
-
-Critically, spatial reasoning remains weak across both models, with LLaVA-v1.5 failing catastrophically (12\% accuracy) and even Qwen3-VL achieving only 80\%. This indicates that geometric reasoning remains a fundamental challenge for current \VLMs.
-
-Prompt engineering provides meaningful improvements for weaker models: LLaVA-v1.5's strict prompting improves accuracy by 10 percentage points, with counting accuracy improving dramatically from 56\% to 88\%. However, strict prompting does not improve stronger models and may introduce unnecessary conservatism (Qwen3-VL: 92\% → 91\%).
-
-For practitioners: (1) Architectural improvements (Qwen3-VL over LLaVA-v1.5) provide the largest hallucination reductions, (2) Prompt engineering provides meaningful but limited improvements for weaker models, and (3) No single mitigation strategy suffices for safety-critical spatial reasoning tasks—human verification remains essential.
-
-\pagebreak
-
-\begin{thebibliography}{99}
-
-\bibitem{li2023hallucination}
-Li, Y., Du, Y., Liu, S., et al. (2023). Evaluating Object Hallucination in Vision-Language Models. In \textit{Proceedings of the 2023 Conference on Empirical Methods in Natural Language Processing (EMNLP)}.
-
-\bibitem{rohrbach2018object}
-Rohrbach, A., Rohrbach, M., Tanaka, Y., \& Schiele, B. (2018). Grounding of Textual Phrases in Images by Reconstruction. In \textit{Computer Vision--ECCV 2016: 14th European Conference, Amsterdam, The Netherlands, October 11-14, 2016, Proceedings, Part I 14} (pp. 817-834). Springer International Publishing.
-
-\bibitem{liu2023improved}
-Liu, H., Li, C., Wu, Q., et al. (2023). Improved Baselines with Visual Instruction Tuning. arXiv preprint arXiv:2310.03744.
-
-\bibitem{li2024qwen}
-Li, J., Li, D., Savarese, S., \& Hoi, S. (2024). QWEN-VL: A Frontier Large Vision-Language Model with Versatile Abilities. In \textit{Advances in Neural Information Processing Systems} (Vol. 37).
-
-\bibitem{rawte2023survey}
-Rawte, V., Sheth, A., \& Das, A. (2023). A Survey of Hallucination in Large Language Models. arXiv preprint arXiv:2309.01219.
-
-\bibitem{pope}
-Li, Y., Du, Y., Zhou, K., et al. (2023). POPE: Object Probing Evaluation for Vision-Language Models. arXiv preprint arXiv:2305.10355.
-
-\bibitem{clipvision}
-Radford, A., Kim, J. W., Hallacy, C., et al. (2021). Learning Transferable Visual Models From Natural Language Supervision. In \textit{International Conference on Machine Learning} (pp. 8748-8763). PMLR.
-
-\bibitem{vicuna}
-Chiang, W. L., Li, Z., Lin, Z., et al. (2023). Vicuna: An Open-Source Chatbot Impressing GPT-4 with 90\%* ChatGPT Quality. Retrieved from https://lmsys.org/blog/2023-03-30-vicuna/
-
-\bibitem{transformer}
-Vaswani, A., Shazeer, N., Parmar, N., et al. (2017). Attention is All You Need. In \textit{Advances in Neural Information Processing Systems} (pp. 5998-6008).
-
-\bibitem{vqa}
-Antol, S., Aishwarya, A., Jiasen, L., et al. (2015). VQA: Visual Question Answering. In \textit{IEEE International Conference on Computer Vision}. IEEE.
-
-\end{thebibliography}
-
-\end{document}
-
-\section{Introduction}
-
-Vision-Language Models can answer questions about images and generate fluent descriptions, but they may also hallucinate: they produce plausible statements that are not grounded in the visual evidence. This failure mode is important for safety-critical applications such as medical imaging, autonomous driving, and media verification.
-
-\subsection{Hallucination Types}
-
-\begin{itemize}
-    \item \textbf{Object hallucination}: the model claims that an absent object is present.
-    \item \textbf{Attribute hallucination}: the model assigns an incorrect color or property.
-    \item \textbf{Relation hallucination}: the model misreads spatial relationships.
-    \item \textbf{Counting hallucination}: the model reports an incorrect number of objects.
-\end{itemize}
-
-\subsection{Contributions}
-
-\begin{enumerate}
-    \item A self-consistent probing benchmark for four VLM hallucination categories.
-    \item A comparative evaluation setup for LLaVA-v1.5 and Qwen3-VL, with optional InternVL3.5 support.
-    \item POPE-style metrics and condition-level error analysis.
-    \item A baseline vs strict-prompt mitigation study.
-\end{enumerate}
-
-\section{Evaluated Models}
-
-\subsection{LLaVA-v1.5}
-
-LLaVA-v1.5 combines a visual encoder with a Vicuna-based language model and is a widely used open VLM baseline.
-
-\subsection{Qwen3-VL}
-
-Qwen3-VL is a recent multimodal model family from the Qwen series. The project uses the 8B Instruct checkpoint by default.
-
-\subsection{Optional: InternVL3.5}
-
-InternVL3.5 is included as an optional third model when additional GPU time is available.
-
-\section{Methodology}
-
-\subsection{Benchmark Design}
-
-The benchmark consists of image-question pairs where the correct answer is always \enquote{no}. This makes it a negative probing benchmark similar in spirit to POPE: a \enquote{yes} answer is a false-positive hallucination.
-
-\begin{table}[h]
-\centering
-\caption{Trap-question categories}
-\begin{tabular}{@{}lll@{}}
-\toprule
-\textbf{Type} & \textbf{Description} & \textbf{Example} \\
-\midrule
-Object absent & Query about an absent object & \enquote{Is there a dog in this image?} \\
-Attribute & Query with a false property & \enquote{Is the square red?} \\
-Relation & Query with a false spatial relation & \enquote{Is the circle above the triangle?} \\
-Count & Query with a false count & \enquote{Are there five circles?} \\
-\bottomrule
-\end{tabular}
-\end{table}
-
-\subsection{Metrics}
-
-We report:
-
-\begin{itemize}
-    \item Overall accuracy.
-    \item Hallucination rate: fraction of \enquote{yes} answers on negative probes.
-    \item POPE-style false-positive rate.
-    \item Accuracy by question type.
-    \item Condition-level metrics by object, claimed color, relation, and count.
-\end{itemize}
-
-\subsection{Confusion Matrix: TP, TN, FP, FN}
-
-Since all questions in our benchmark ask about non-existent or incorrect conditions, all correct answers are \enquote{no}. This design yields a special case of the confusion matrix:
-
-\begin{table}[h]
-\centering
-\caption{Confusion Matrix for Hallucination Evaluation}
-\begin{tabular}{lll}
-\toprule
-\textbf{Model Response} & \textbf{Ground Truth} & \textbf{Classification} \\
-\midrule
-Says \enquote{No} & Correct answer is \enquote{No} & \textbf{TN} (True Negative) ✓ \\
-Says \enquote{Yes} & Correct answer is \enquote{No} & \textbf{FP} (False Positive) ✗ \\
-\bottomrule
-\end{tabular}
-\end{table}
-
-\textbf{Key insight}: There are no TP (True Positive) or FN (False Negative) cases in this benchmark because we never ask about conditions that are actually true. The benchmark is specifically designed to measure hallucination:
-
-\begin{itemize}
-    \item \textbf{TN---True Negative}: Model correctly rejects the false premise by answering \enquote{no}. This is the desired behavior.
-    \item \textbf{FP---False Positive}: Model incorrectly accepts the false premise by answering \enquote{yes}. This is a hallucination.
-\end{itemize}
+To illustrate the evaluation methodology, I present concrete examples from each hallucination category:
 
 \textbf{Examples}:
 \begin{itemize}
@@ -445,63 +120,233 @@ Says \enquote{Yes} & Correct answer is \enquote{No} & \textbf{FP} (False Positiv
         \end{itemize}
 \end{itemize}
 
-\subsection{Mitigation}
+\section{Results}
 
-The baseline prompt asks the model to answer only yes or no. The mitigation prompt adds an explicit visual-verification instruction:
+\subsection{Overall Performance}
 
-\begin{quote}
-Answer only yes or no. Verify the visual evidence carefully. If the requested object, attribute, relation, or count is not clearly visible, answer no. Do not infer likely objects from context.
-\end{quote}
-
-\section{Experiments and Results}
-
-Replace the placeholder values below with the generated JSON metrics after running the cluster jobs.
+My evaluation reveals stark differences in hallucination susceptibility between the two models:
 
 \begin{table}[h]
 \centering
-\caption{Model-level results}
-\begin{tabular}{@{}lccc@{}}
+\begin{tabular}{lcc}
 \toprule
-\textbf{Model} & \textbf{Accuracy} & \textbf{Hallucination Rate} & \textbf{Unknown Rate} \\
+\textbf{Metric} & \textbf{LLaVA-v1.5} & \textbf{Qwen3-VL} \\
 \midrule
-LLaVA-v1.5 & -- & -- & -- \\
-Qwen3-VL & -- & -- & -- \\
+Overall Accuracy & 53\% & 92\% \\
+Hallucination Rate (FPR) & 47\% & 8\% \\
+Total Samples & 100 & 100 \\
 \bottomrule
 \end{tabular}
+\caption{Overall Hallucination Metrics Comparison}
 \end{table}
 
-\begin{figure}[h]
+This substantial performance gap (47 percentage points in hallucination rate) indicates fundamental differences in how these models process and integrate visual information with question context.
+
+\subsection{Category-Specific Analysis}
+
+\subsubsection{Absent Objects}
+
+Both models perform well on this task, with Qwen3-VL achieving perfect accuracy. LLaVA-v1.5's 76\% accuracy suggests occasional false-positive errors when explicitly asked about absent objects. This is the category where LLaVA-v1.5 performs relatively best, achieving nearly three-quarters correct identifications of missing objects.
+
+\vspace{10pt}
+\begin{table}[h]
 \centering
-\includegraphics[width=0.8\textwidth]{reports/llava15/complete_results.png}
-\caption{Example generated plot for LLaVA-v1.5. Update the path as needed.}
-\end{figure}
+\begin{tabular}{lcc}
+\toprule
+\textbf{Model} & \textbf{Accuracy} & \textbf{Samples} \\
+\midrule
+LLaVA-v1.5 & 76\% & 25 \\
+Qwen3-VL & 100\% & 25 \\
+\bottomrule
+\end{tabular}
+\caption{Absent Object Recognition Performance}
+\end{table}
 
-\section{Analysis}
+\subsubsection{Attribute Errors}
 
-Discuss which question categories and metadata conditions produce the highest hallucination rates. In particular, compare object-absent questions against relation and count questions, because relation and count probes often require more precise visual grounding.
+Attribute recognition shows moderate robustness in LLaVA-v1.5 (68\%) but near-perfect performance in Qwen3-VL (96\%). This suggests that attribute hallucination---incorrectly describing object colors, materials, or other properties---is a notable weakness in older VLM architectures.
 
-\section{Mitigation Results}
+\vspace{10pt}
+\begin{table}[h]
+\centering
+\begin{tabular}{lcc}
+\toprule
+\textbf{Model} & \textbf{Accuracy} & \textbf{Samples} \\
+\midrule
+LLaVA-v1.5 & 68\% & 25 \\
+Qwen3-VL & 96\% & 25 \\
+\bottomrule
+\end{tabular}
+\caption{Attribute Hallucination Analysis}
+\end{table}
 
-Compare baseline folders such as \texttt{results/llava15_baseline} with strict-prompt folders such as \texttt{results/llava15_strict}. Report whether the strict prompt reduces false-positive hallucination and whether it increases unknown or overly conservative answers.
+\subsubsection{Spatial Relations (Critical Weakness)}
 
-\section{Limitations}
+This result represents LLaVA-v1.5's most critical weakness: spatial reasoning. With only 12\% accuracy on spatial relationship questions, the model hallucinates spatial configurations in 88\% of cases. Qwen3-VL performs substantially better (80\%), though this remains the weakest category for both models, indicating that precise spatial reasoning remains a challenge for current \VLMs.
 
-The default benchmark is synthetic. For a stronger scientific evaluation, add real-image probes from MSCOCO, Visual Genome, MMHal-Bench, or HallusionBench and compare whether the same error patterns hold.
+\begin{table}[h]
+\centering
+\begin{tabular}{lcc}
+\toprule
+\textbf{Model} & \textbf{Accuracy} & \textbf{Samples} \\
+\midrule
+LLaVA-v1.5 & 12\% & 25 \\
+Qwen3-VL & 80\% & 25 \\
+\bottomrule
+\end{tabular}
+\caption{Spatial Reasoning Performance}
+\end{table}
+
+\subsubsection{Counting}
+
+LLaVA-v1.5 shows near-random performance on counting tasks (56\%), indicating significant difficulty with numerical quantification of visual content. Qwen3-VL demonstrates much better performance (92\%), suggesting improved numerical reasoning capabilities in newer architectures.
+
+\vspace{10pt}
+\begin{table}[H]
+\centering
+\begin{tabular}{lcc}
+\toprule
+\textbf{Model} & \textbf{Accuracy} & \textbf{Samples} \\
+\midrule
+LLaVA-v1.5 & 56\% & 25 \\
+Qwen3-VL & 92\% & 25 \\
+\bottomrule
+\end{tabular}
+\caption{Counting Task Performance}
+\end{table}
+
+\subsection{Comparative Visualization}
+
+\vspace{5pt}
+\begin{table}[H]
+\centering
+\begin{tabular}{lrrrr}
+\toprule
+\textbf{Category} & \textbf{LLaVA (Acc.)} & \textbf{Qwen (Acc.)} & \textbf{Delta} & \textbf{Gap Analysis} \\
+\midrule
+Absent Objects & 76\% & 100\% & +24 pp & Minor weakness \\
+Attributes & 68\% & 96\% & +28 pp & Moderate weakness \\
+Spatial Relations & 12\% & 80\% & +68 pp & \textcolor{red}{Critical Gap} \\
+Counting & 56\% & 92\% & +36 pp & Significant weakness \\
+\midrule
+\textbf{Overall} & \textbf{53\%} & \textbf{92\%} & \textbf{+39 pp} & \\
+\bottomrule
+\end{tabular}
+\caption{Comprehensive Category Breakdown}
+\end{table}
+
+\subsection{Mitigation Strategy: Prompt Engineering}
+
+As I commented before, I evaluated prompt engineering as a low-cost mitigation approach by comparing:
+
+\textbf{Baseline}: ``[Question]? Answer only yes or no.''
+
+\textbf{Strict}: ``[Question]? Answer only yes or no. Verify the visual evidence carefully. If the requested object, attribute, relation, or count is not clearly visible, answer no. Do not infer likely objects from context.''
+
+\subsubsection{Results}
+
+Strict prompting reduces hallucinations for LLaVA-v1.5 (+10 pp accuracy, -10 pp hallucination), with the largest improvements in spatial reasoning (+12 pp) and counting (+32 pp). Qwen3-VL shows different behavior: accuracy slightly decreases (-1 pp), hallucination slightly increases (+1 pp), and spatial reasoning decreases (-4 pp). This suggests that for already-robust models, strict prompting introduces unnecessary conservatism, while for weak models, it provides substantial benefits, being architectural improvements the most effective hallucination mitigation strategy.
+
+\vspace{10pt}
+\begin{table}[h]
+\centering
+\begin{tabular}{lrr|rr}
+\toprule
+& \multicolumn{2}{c|}{LLaVA-v1.5} & \multicolumn{2}{c}{Qwen3-VL} \\
+\textbf{Metric} & Base & Strict & Base & Strict \\
+\midrule
+Accuracy & 53\% & 63\% & 92\% & 91\% \\
+Hallucination & 47\% & 37\% & 8\% & 9\% \\
+Spatial & 12\% & 24\% & 80\% & 76\% \\
+\bottomrule
+\end{tabular}
+\caption{Mitigation Study: Baseline vs Strict Prompting}
+\end{table}
+
+\subsubsection{Category-Specific Improvements}
+
+For LLaVA-v1.5, counting shows the largest improvement (+32 pp), suggesting the model benefits significantly from explicit verification instructions when quantifying objects. Spatial reasoning also improves substantially (+12 pp), though it remains weak. Attributes show minor degradation, indicating strict prompting may be overly conservative for attribute verification.
+
+\begin{table}[H]
+\centering
+\begin{tabular}{lrrr}
+\toprule
+\textbf{Category} & \textbf{Baseline} & \textbf{Strict} & \textbf{Improvement} \\
+\midrule
+Absent Objects & 76\% & 76\% & 0 pp \\
+Attributes & 68\% & 64\% & -4 pp \\
+Spatial Relations & 12\% & 24\% & +12 pp \\
+Counting & 56\% & 88\% & +32 pp \\
+\bottomrule
+\end{tabular}
+\caption{LLaVA-v1.5: Category Performance with Mitigation}
+\end{table}
+
+For Qwen3-VL, strict prompting provides no improvements and causes minor regression in spatial reasoning (-4 pp). This indicates that the model already incorporates evidence-based reasoning implicitly, and explicit instructions actually introduce unnecessary constraints.
+
+\vspace{10pt}
+\begin{table}[H]
+\centering
+\begin{tabular}{lrrr}
+\toprule
+\textbf{Category} & \textbf{Baseline} & \textbf{Strict} & \textbf{Change} \\
+\midrule
+Absent Objects & 100\% & 100\% & 0 pp \\
+Attributes & 96\% & 96\% & 0 pp \\
+Spatial Relations & 80\% & 76\% & -4 pp \\
+Counting & 92\% & 92\% & 0 pp \\
+\bottomrule
+\end{tabular}
+\caption{Qwen3-VL: Category Performance with Mitigation}
+\end{table}
+
+\section{Discussion}
+
+\subsection{Key Findings}
+
+My evaluation reveals that while Vision-Language Models have advanced substantially, hallucination remains a critical limitation. LLaVA-v1.5's catastrophic failure on spatial relations (12\% accuracy) suggests weak spatial grounding. Qwen3-VL demonstrates improved visual-semantic alignment (92\% overall, 80\% spatial), indicating that recent architectural improvements substantially reduce hallucination. This 39-percentage-point gap underscores the importance of model selection for safety-critical applications.
+
+\subsection{Recommendations}
+
+For safety-critical applications, Qwen3-VL is substantially preferable to LLaVA-v1.5 across all hallucination dimensions. However, no single VLM should be trusted alone for spatial reasoning tasks. I recommend: (1) model selection based on task-specific requirements, (2) strict prompting to reduce false-positives, (3) ensemble approaches for critical decisions, and (4) human verification for high-stakes applications.
+
+\pagebreak
 
 \section{Conclusion}
 
-This project provides a reproducible workflow for probing VLM hallucination, comparing recent open models, analyzing failure conditions, and testing a prompt-based mitigation strategy.
+This report presents a systematic evaluation of hallucination susceptibility in two open-source Vision-Language Models using a controlled negative-probing benchmark. The results reveal a substantial performance gap: LLaVA-v1.5 achieves only 53\% accuracy with a 47\% hallucination rate, while Qwen3-VL reaches 92\% accuracy with an 8\% false-positive rate, a 39-percentage-point difference that reflects meaningful architectural progress in vision-language alignment.
 
-\section*{References}
+Category-level analysis identifies spatial reasoning as the most persistent challenge across both models. LLaVA-v1.5 fails near-catastrophically in this category (12\%), and even Qwen3-VL, despite its overall robustness, achieves only 80\%, suggesting that geometric and relational understanding remains an open problem for current VLMs regardless of scale or training improvements.
 
-\begin{itemize}
-    \item Rohrbach et al. Object Hallucination in Image Captioning. EMNLP 2018.
-    \item Li et al. Evaluating Object Hallucination in Large Vision-Language Models. EMNLP 2023.
-    \item Liu et al. Improved Baselines with Visual Instruction Tuning (LLaVA-v1.5). CVPR 2024.
-    \item Bai et al. Qwen3-VL Technical Report. arXiv 2025.
-    \item Wang et al. InternVL3.5: Advancing Open-Source Multimodal Models in Versatility, Reasoning, and Efficiency. arXiv 2025.
-    \item Guan et al. HallusionBench: An Advanced Diagnostic Suite for Entangled Language Hallucination and Visual Illusion in Large Vision-Language Models. CVPR 2024.
-    \item Compagnoni et al. Mitigating Hallucinations in Multimodal LLMs via Object-aware Preference Optimization. BMVC 2025.
-\end{itemize}
+Prompt engineering offers a practical, zero-cost mitigation for weaker models: strict verification instructions improve LLaVA-v1.5's overall accuracy by 10 percentage points, with particularly large gains in counting (+32 pp) and spatial reasoning (+12 pp). However, the same strategy yields no benefit---and minor regression---for Qwen3-VL, indicating that explicit prompting constraints become counterproductive once a model has internalized evidence-based reasoning during training.
+
+Taken together, these findings carry clear practical implications. Model selection is the single most impactful decision for reducing hallucination risk: for any application where false positives carry meaningful consequences, architectural quality dominates prompt-level interventions. Nevertheless, no current model should be deployed without human oversight in spatial or safety-critical tasks. Future work should extend this evaluation to larger benchmarks with natural images, multi-object scenes, and adversarial linguistic framings to better characterize the boundaries of hallucination robustness in production settings.
+
+\pagebreak
+
+\begin{thebibliography}{99}
+
+\bibitem{rohrbach2018object}
+Rohrbach, A., Hendricks, L. A., Burns, K., Darrell, T., \& Saenko, K. (2018). Object Hallucination in Image Captioning. In \textit{Proceedings of the 2018 Conference on Empirical Methods in Natural Language Processing (EMNLP)}.
+
+\bibitem{li2023hallucination}
+Li, Y., Du, Y., Zhou, K., Wang, J., Zhao, W. X., \& Wen, J. R. (2023). Evaluating Object Hallucination in Large Vision-Language Models. In \textit{Proceedings of the 2023 Conference on Empirical Methods in Natural Language Processing (EMNLP)}.
+
+\bibitem{liu2024improved}
+Liu, H., Li, C., Li, Y., \& Lee, Y. J. (2024). Improved Baselines with Visual Instruction Tuning. In \textit{Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition (CVPR)}.
+
+\bibitem{bai2025qwen3vl}
+Bai, S., Chen, K., Liu, X., et al. (2025). Qwen3-VL Technical Report. \textit{arXiv preprint arXiv:2504.10479}.
+
+\bibitem{wang2025internvl}
+Wang, W., Chen, Z., Chen, X., et al. (2025). InternVL3.5: Advancing Open-Source Multimodal Models in Versatility, Reasoning, and Efficiency. \textit{arXiv preprint}.
+
+\bibitem{guan2024hallusionbench}
+Guan, T., Liu, F., Wu, X., et al. (2024). HallusionBench: An Advanced Diagnostic Suite for Entangled Language Hallucination and Visual Illusion in Large Vision-Language Models. In \textit{Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition (CVPR)}.
+
+\bibitem{compagnoni2025mitigating}
+Compagnoni, E. M., Günnemann, S., \& Kersting, K. (2025). Mitigating Hallucinations in Multimodal LLMs via Object-aware Preference Optimization. In \textit{Proceedings of the British Machine Vision Conference (BMVC)}.
+
+\end{thebibliography}
 
 \end{document}
